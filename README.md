@@ -1,4 +1,4 @@
-# Name der App
+# WildSound
 
 **Füge hier einen kurzen, knackigen Slogan ein, um deine App zu bewerben.**
 
