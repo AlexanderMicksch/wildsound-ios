@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		8D6738742E2E3116007C2C27 /* WildSound.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WildSound.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D67389B2E2E3253007C2C27 /* WildSound.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WildSound.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		8D6738762E2E3116007C2C27 /* WildSound */ = {
+		8D67389D2E2E3253007C2C27 /* WildSound */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = WildSound;
 			sourceTree = "<group>";
@@ -19,7 +19,7 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		8D6738712E2E3116007C2C27 /* Frameworks */ = {
+		8D6738982E2E3253007C2C27 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -29,18 +29,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8D67386B2E2E3116007C2C27 = {
+		8D6738922E2E3253007C2C27 = {
 			isa = PBXGroup;
 			children = (
-				8D6738762E2E3116007C2C27 /* WildSound */,
-				8D6738752E2E3116007C2C27 /* Products */,
+				8D67389D2E2E3253007C2C27 /* WildSound */,
+				8D67389C2E2E3253007C2C27 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		8D6738752E2E3116007C2C27 /* Products */ = {
+		8D67389C2E2E3253007C2C27 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D6738742E2E3116007C2C27 /* WildSound.app */,
+				8D67389B2E2E3253007C2C27 /* WildSound.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,64 +48,64 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8D6738732E2E3116007C2C27 /* WildSound */ = {
+		8D67389A2E2E3253007C2C27 /* WildSound */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8D6738842E2E3117007C2C27 /* Build configuration list for PBXNativeTarget "WildSound" */;
+			buildConfigurationList = 8D6738A92E2E3254007C2C27 /* Build configuration list for PBXNativeTarget "WildSound" */;
 			buildPhases = (
-				8D6738702E2E3116007C2C27 /* Sources */,
-				8D6738712E2E3116007C2C27 /* Frameworks */,
-				8D6738722E2E3116007C2C27 /* Resources */,
+				8D6738972E2E3253007C2C27 /* Sources */,
+				8D6738982E2E3253007C2C27 /* Frameworks */,
+				8D6738992E2E3253007C2C27 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				8D6738762E2E3116007C2C27 /* WildSound */,
+				8D67389D2E2E3253007C2C27 /* WildSound */,
 			);
 			name = WildSound;
 			packageProductDependencies = (
 			);
 			productName = WildSound;
-			productReference = 8D6738742E2E3116007C2C27 /* WildSound.app */;
+			productReference = 8D67389B2E2E3253007C2C27 /* WildSound.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		8D67386C2E2E3116007C2C27 /* Project object */ = {
+		8D6738932E2E3253007C2C27 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
-					8D6738732E2E3116007C2C27 = {
+					8D67389A2E2E3253007C2C27 = {
 						CreatedOnToolsVersion = 16.2;
 					};
 				};
 			};
-			buildConfigurationList = 8D67386F2E2E3116007C2C27 /* Build configuration list for PBXProject "WildSound" */;
+			buildConfigurationList = 8D6738962E2E3253007C2C27 /* Build configuration list for PBXProject "WildSound" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 8D67386B2E2E3116007C2C27;
+			mainGroup = 8D6738922E2E3253007C2C27;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 8D6738752E2E3116007C2C27 /* Products */;
+			productRefGroup = 8D67389C2E2E3253007C2C27 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8D6738732E2E3116007C2C27 /* WildSound */,
+				8D67389A2E2E3253007C2C27 /* WildSound */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		8D6738722E2E3116007C2C27 /* Resources */ = {
+		8D6738992E2E3253007C2C27 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -115,7 +115,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		8D6738702E2E3116007C2C27 /* Sources */ = {
+		8D6738972E2E3253007C2C27 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -125,7 +125,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		8D6738822E2E3117007C2C27 /* Debug */ = {
+		8D6738A72E2E3254007C2C27 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -188,7 +188,7 @@
 			};
 			name = Debug;
 		};
-		8D6738832E2E3117007C2C27 /* Release */ = {
+		8D6738A82E2E3254007C2C27 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -244,7 +244,7 @@
 			};
 			name = Release;
 		};
-		8D6738852E2E3117007C2C27 /* Debug */ = {
+		8D6738AA2E2E3254007C2C27 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -272,7 +272,7 @@
 			};
 			name = Debug;
 		};
-		8D6738862E2E3117007C2C27 /* Release */ = {
+		8D6738AB2E2E3254007C2C27 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -303,25 +303,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8D67386F2E2E3116007C2C27 /* Build configuration list for PBXProject "WildSound" */ = {
+		8D6738962E2E3253007C2C27 /* Build configuration list for PBXProject "WildSound" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				8D6738822E2E3117007C2C27 /* Debug */,
-				8D6738832E2E3117007C2C27 /* Release */,
+				8D6738A72E2E3254007C2C27 /* Debug */,
+				8D6738A82E2E3254007C2C27 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8D6738842E2E3117007C2C27 /* Build configuration list for PBXNativeTarget "WildSound" */ = {
+		8D6738A92E2E3254007C2C27 /* Build configuration list for PBXNativeTarget "WildSound" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				8D6738852E2E3117007C2C27 /* Debug */,
-				8D6738862E2E3117007C2C27 /* Release */,
+				8D6738AA2E2E3254007C2C27 /* Debug */,
+				8D6738AB2E2E3254007C2C27 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 8D67386C2E2E3116007C2C27 /* Project object */;
+	rootObject = 8D6738932E2E3253007C2C27 /* Project object */;
 }
