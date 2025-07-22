@@ -1,11 +1,11 @@
 # WildSound
 
-**Füge hier einen kurzen, knackigen Slogan ein, um deine App zu bewerben.**
+**Entdecke die Welt der Tiere – durch ihre Stimmen!**
 
-Beschreibe hier in ein paar Sätzen, was deine App bietet.
+Das spannende Quiz, bei dem du herausfinden musst, welches Tier welchen Laut macht.
 
-Für wen ist sie geeignet? Welches Problem löst sie? Was macht deine App anders/besser als andere Apps?
-Vermeide es, hier allzusehr in technische Details zu gehen.
+WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fakten über Tiere und ihre Stimmen. Perfekt für Kinder, Erwachsene, Tierfreunde, Naturfans und als edukatives Spiel für die ganze Familie.
+
 
 
 ## Design
