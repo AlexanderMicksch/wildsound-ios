@@ -9,13 +9,10 @@ WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fa
 
 
 ## Design
-Füge hier am Ende die Screenshots deiner App ein (achte hierbei auf die Guidelines).
 
-<p>
-  <img src="./img/screen1.png" width="200">
-  <img src="./img/screen2.png" width="200">
-  <img src="./img/screen3.png" width="200">
-</p>
+**In diesem Moment entsteht gerade eine sehr coole Tierstimmen-Quiz App!** 
+
+**Bilder folgen bald...**
 
 
 ## Features
