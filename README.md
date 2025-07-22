@@ -44,6 +44,9 @@ WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fa
   - Services
   - Resources
 
+#### Audio Widergabe
+
+- Die Tierstimmen werden mit AVFoundation (AVPlayer) direkt aus dem Internet als Stream, oder aus dem Firebase Storage abgespielt
 
 #### Datenspeicherung
 
@@ -66,16 +69,22 @@ WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fa
   - **xeno-canto**: Legale, große Vogelstimmendatenbank
   - **Wikipedia-API**: Liefert sehr zuverlässig aktuelle Bilder und Texte zu praktisch jedem Tier
 
+#### Zentrale Datenlogik
+
+- **Alle wichtigen Datenquellen werden im SwiftData-Model pro Tier gebündelt**
+  - Die App speichert Name, wikiTitle und Sound-URL (Firebase Storage/xeno-canto) in SwiftData
+  - Bilder und Tier Details werden live über die Wikipedia API geladen
+
 #### API Calls
 
 - **Wikipedia REST API (MediaWiki REST API)**  
-  Für Bild und Beschreibung jedes Tieres (über den WikiTitle im Model)
+ - Für Bild und Beschreibung jedes Tieres (über den WikiTitle im Model)
   
 - **xeno-canto API**  
-  Für Vogelstimmen
+  - Für Vogelstimmen
   
 - **Firebase Storage**  
-  Für alle anderen Tierstimmen als MP3
+  - Für alle anderen Tierstimmen als MP3
 
 
 #### 3rd-Party Frameworks
