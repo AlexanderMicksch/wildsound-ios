@@ -19,33 +19,74 @@ Füge hier am Ende die Screenshots deiner App ein (achte hierbei auf die Guideli
 
 
 ## Features
-Hier kommen alle Features rein, welche deine App bietet.
 
-**Tipp: Du kannst diese Punkte auch am Anfang ausfüllen und mit der Zeit abhaken, sodass am Ende eine vollständige Liste entsteht.**
-
-- [x] Feature 1
-- [x] Feature 2
-- [ ] ...
-
+- [ ] Tierlaute-Quiz: Zu jedem Tier wird ein Ton abgespielt – du musst das passende Tier auswählen!
+- [ ] Detailansicht: Zu jedem Tier gibt es spannende Fakten und Bilder aus Wikipedia
+- [ ] Lokale Speicherung des Fortschritts per SwiftData (z. B. erratene Tiere, Favoriten) 
+- [ ] Nutzung von Firebase Storage für Tierstimmen (MP3)
+- [ ] Direkte Nutzung von xeno-canto für Vogelstimmen
+- [ ] Übersicht aller bereits entdeckten Tiere (Sammlung)
 
 ## Technischer Aufbau
 
 #### Projektaufbau
-Eine kurze Beschreibung deiner Ordnerstruktur und Architektur (MVVM, Repositories) um Außenstehenden zu helfen, sich in deinem Projekt zurecht zu finden.
+
+- **MVVM-Architektur**:  
+  - Model: Animal, QuizState, etc.
+  - ViewModel: QuizViewModel, AnimalListViewModel, etc.
+  - Views: QuizView, DetailView, CollectionView
+    
+- **Repositories**:  
+  - Für API-Anbindung (Wikipedia, xeno-canto)
+  - Für lokale Speicherung (SwiftData)
+    
+- **Ordnerstruktur**:  
+  - Models
+  - ViewModels
+  - Views
+  - Services
+  - Resources
+
 
 #### Datenspeicherung
-Welche Daten speicherst du? Wo und wie (Firebase, Core Data)? Erkläre hier auch, warum du den jeweiligen Dienst nutzt (offline-first, Sync usw.).
+
+- **Tiere & ihre Eigenschaften:** 
+  - Gespeichert als Model-Objekte in SwiftData
+  
+- **Tierstimmen:**  
+  - Firebase Storage: MP3-Dateien werden von der App per URL geladen
+  - Für Vögel: Nutzung der xeno-canto API und MP3-Links
+    
+- **Nutzerfortschritt, Favoriten, Highscores:**  
+  - Lokal in SwiftData gespeichert
+ 
+- **Warum genau so?**  
+  - **SwiftData**: Modern, Lokal, leicht erweiterbar
+  - **Firebase Storage**: Professioneller Cloud-Speicher für Mediendateien
+  - **xeno-canto**: Legale, große Vogelstimmendatenbank
+
 
 #### API Calls
-Welche APIs verwendest du?
+
+- **Wikipedia REST API (MediaWiki REST API)**  
+  Für Bild und Beschreibung jedes Tieres (über den WikiTitle im Model)
+  
+- **xeno-canto API**  
+  Für Vogelstimmen
+  
+- **Firebase Storage**  
+  Für alle anderen Tierstimmen als MP3
+
 
 #### 3rd-Party Frameworks
-Verwendest du Frameworks, die nicht von dir stammen? Bspw. Swift Packages für Firebase, fertige SwiftUI-Views o.Ä.? Gib diese hier an.
+
+- Firebase SDK für iOS (Swift Package Manager)
 
 
 ## Ausblick
-Beschreibe hier, wo die Reise nach deinem Praxisprojekt hin geht. Was möchtest du in Zukunft noch ergänzen?
 
-- [ ] Geplantes Feature 1
-- [ ] Geplantes Feature 2
-- [ ] ...
+- [ ] Verschiedene Schwierigkeitsgrade und Tierklassen (Vögel, Säugetiere, Reptilien etc.)
+- [ ] Mehrsprachigkeit: Tiernamen in mehreren Sprachen auswählbar
+- [ ] Belohnungssystem (z. B. Abzeichen)
+- [ ] Lokaler Multiplayer-Modus 
+
