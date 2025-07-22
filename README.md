@@ -47,9 +47,12 @@ WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fa
 
 #### Datenspeicherung
 
-- **Tiere & ihre Eigenschaften:** 
-  - Gespeichert als Model-Objekte in SwiftData
-  
+- **Tiere & ihre Grunddaten:** 
+  - Gespeichert als Model-Objekte in SwiftData (Name, Sound-URL, wikiTitle etc.)
+
+- **Bilder & Tier Detail Beschreibungen**
+  - Dynamisch zur Laufzeit von der Wikipedia API geladen (Beschreibung, Foto, Details)
+
 - **Tierstimmen:**  
   - Firebase Storage: MP3-Dateien werden von der App per URL geladen
   - Für Vögel: Nutzung der xeno-canto API und MP3-Links
@@ -61,7 +64,7 @@ WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fa
   - **SwiftData**: Modern, Lokal, leicht erweiterbar
   - **Firebase Storage**: Professioneller Cloud-Speicher für Mediendateien
   - **xeno-canto**: Legale, große Vogelstimmendatenbank
-
+  - **Wikipedia-API**: Liefert sehr zuverlässig aktuelle Bilder und Texte zu praktisch jedem Tier
 
 #### API Calls
 
