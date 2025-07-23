@@ -28,16 +28,16 @@ WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fa
 
 #### Projektaufbau
 
-- **MVVM-Architektur**:  
+- **MVVM-Architektur:**  
   - Model: Animal, QuizState, etc.
   - ViewModel: QuizViewModel, AnimalListViewModel, etc.
   - Views: QuizView, DetailView, CollectionView
     
-- **Repositories**:  
+- **Repositories:**  
   - Für API-Anbindung (Wikipedia, xeno-canto)
   - Für lokale Speicherung (SwiftData)
     
-- **Ordnerstruktur**:  
+- **Ordnerstruktur:** 
   - Models
   - ViewModels
   - Views
