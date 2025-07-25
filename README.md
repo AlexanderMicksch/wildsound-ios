@@ -29,8 +29,8 @@ WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fa
 #### Projektaufbau
 
 - **MVVM-Architektur:**  
-  - Model: Animal, QuizState, etc.
-  - ViewModel: QuizViewModel, AnimalListViewModel, etc.
+  - Models: Animal, QuizState, etc.
+  - ViewModels: QuizViewModel, AnimalListViewModel, etc.
   - Views: QuizView, DetailView, CollectionView
     
 - **Repositories:**  
