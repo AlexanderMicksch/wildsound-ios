@@ -36,6 +36,7 @@ WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fa
 - **Repositories:**  
   - Für API-Anbindung (Wikipedia, xeno-canto)
   - Für lokale Speicherung (SwiftData)
+  - Für das Laden und Speichern von Tierstimmen (Firebase Storage)
     
 - **Ordnerstruktur:** 
   - Models
