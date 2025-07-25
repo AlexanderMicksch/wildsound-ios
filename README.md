@@ -79,7 +79,7 @@ WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fa
 #### API Calls
 
 - **Wikipedia REST API (MediaWiki REST API):**  
- - Für Bild und Beschreibung jedes Tieres (über den WikiTitle im Model).
+  - Für Bild und Beschreibung jedes Tieres (über den WikiTitle im Model).
   
 - **xeno-canto API:**  
   - Für Vogelstimmen.
@@ -90,7 +90,7 @@ WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fa
 
 #### 3rd-Party Frameworks
 
-- Firebase SDK für iOS (Swift Package Manager)
+  - Firebase SDK für iOS (Swift Package Manager)
 
 
 ## Ausblick
