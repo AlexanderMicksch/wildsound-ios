@@ -22,8 +22,8 @@ class Animal: Identifiable {
          name: String,
          soundURL: String,
          wikiTitle: String,
-         isFavorite: Bool,
-         isGuessed: Bool,
+         isFavorite: Bool = false,
+         isGuessed: Bool = false,
          soundSource: String? = nil)
     {
         self.id = id
