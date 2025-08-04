@@ -19,7 +19,7 @@ struct ContentView: View {
                 VStack(alignment: .leading) {
                     Text(animal.name)
                         .font(.headline)
-                    Text("Quelle: \(animal.soundSource ?? "unbekannt")")
+                    Text("Quelle: \(animal.soundSource.displayName)")
                         .font(.caption)
                     Text(animal.wikiTitle)
                         .font(.subheadline)

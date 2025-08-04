@@ -15,23 +15,23 @@ class Animal: Identifiable {
     var soundURL: String
     var wikiTitle: String
     var isFavorite: Bool
-    var isGuessed: Bool
-    var soundSource: String?
+    var guessedCount: Int
+    var soundSource: SoundSource
     
     init(id: UUID = UUID(),
          name: String,
          soundURL: String,
          wikiTitle: String,
          isFavorite: Bool = false,
-         isGuessed: Bool = false,
-         soundSource: String? = nil)
+         guessedCount: Int = 0,
+         soundSource: SoundSource)
     {
         self.id = id
         self.name = name
         self.soundURL = soundURL
         self.wikiTitle = wikiTitle
         self.isFavorite = isFavorite
-        self.isGuessed = isGuessed
+        self.guessedCount = guessedCount
         self.soundSource = soundSource
     }
 }
