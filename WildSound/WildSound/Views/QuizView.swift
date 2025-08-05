@@ -64,8 +64,47 @@ struct QuizView: View {
                         .font(.title)
                         .padding(.bottom)
                     
-                    Text("Richtig: \(viewModel.state.guessedAnimals.count)")
-                    Text("Falsch: \(viewModel.state.failedAnimals.count)")
+                    Text("Richtig: \(viewModel.state.guessedAnimals.count) von \(viewModel.state.allQuestions.count)")
+                        .font(.headline)
+                        .padding(.bottom)
+                    
+                    if  !viewModel.state.guessedAnimals.isEmpty {
+                        Text("Erraten:")
+                            .bold()
+                        ForEach(viewModel.state.guessedAnimals, id: \.id) { animal in
+                            Text(animal.name)
+                                .foregroundColor(.green)
+                        }
+                    }
+                    
+                    if !viewModel.state.failedAnimals.isEmpty {
+                        Text("Nicht erraten:")
+                            .bold()
+                        ForEach(viewModel.state.failedAnimals, id: \.id) { animal in
+                            Text(animal.name)
+                                .foregroundColor(.red)
+                        }
+                    }
+                    
+                    if !viewModel.state.failedAnimals.isEmpty {
+                        Button("Nicht erratene Tiere nochmal spielen") {
+                            viewModel.startSecondChance()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(.orange.opacity(0.3))
+                        .foregroundColor(.primary)
+                        .cornerRadius(15)
+                    }
+                    
+                    Button("Neue Quizrunde starten") {
+                        viewModel.restartQuiz()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(.blue.opacity(0.3))
+                    .foregroundColor(.primary)
+                    .cornerRadius(15)
                 }
             }
         }
