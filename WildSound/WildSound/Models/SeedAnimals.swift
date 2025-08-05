@@ -7,7 +7,7 @@
 
 import Foundation
 
-let seeadAnimals: [Animal] = [
+let seedAnimals: [Animal] = [
     Animal(name: "Amsel", soundURL: "https://example.com/blackbird.mp3", wikiTitle: "Amsel", soundSource: .xenoCanto),
     Animal(name: "Tiger", soundURL: "https://example.com/tiger.mp3", wikiTitle: "Tiger", soundSource: .firebase),
     Animal(name: "Löwe", soundURL: "https://example.com/lion.mp3", wikiTitle: "Löwe", soundSource: .firebase),

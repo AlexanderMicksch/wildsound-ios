@@ -13,7 +13,7 @@ struct SeedService {
         let fetchDescriptor = FetchDescriptor<Animal>()
         let animalsExist = (try? context.fetch(fetchDescriptor).isEmpty == false) ?? false
         if !animalsExist {
-            seeadAnimals.forEach { context.insert($0) }
+            seedAnimals.forEach { context.insert($0) }
         }
     }
 }
