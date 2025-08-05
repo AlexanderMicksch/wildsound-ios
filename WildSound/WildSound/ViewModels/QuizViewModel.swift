@@ -39,9 +39,16 @@ class QuizViewModel: ObservableObject {
         if animal.id == current.id {
             state.guessedAnimals.append(current)
             state.score += 1
+            state.lastAnswerCorrect = true
         } else {
             state.failedAnimals.append(current)
+            state.lastAnswerCorrect = false
         }
+        state.isShowingFeedback = true
+    }
+    
+    func nextQuestionAfterFeedback() {
+        guard let current = state.currentQuestion else { return }
         state.remainingQuestions.removeAll { $0.id == current.id }
         if let next = state.remainingQuestions.first {
             state.currentQuestion = next
@@ -50,8 +57,11 @@ class QuizViewModel: ObservableObject {
             state.currentQuestion = nil
             state.status = .finished
         }
+        state.isShowingFeedback = false
+        state.lastAnswerCorrect = nil
     }
 }
 
-// TODO: Methoden für zweite Chance, Neustart, Feedback-Reset, Sound, Animationen
+// TODO: Methoden für zweite Chance, Neustart, Sound, Animationen
+
 

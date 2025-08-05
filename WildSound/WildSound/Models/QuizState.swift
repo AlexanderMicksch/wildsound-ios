@@ -22,4 +22,6 @@ struct QuizState {
     var failedAnimals: [Animal]             // nicht erratene Tiere
     var score: Int                          // punkte
     var status: QuizStatus
+    var lastAnswerCorrect: Bool? = nil
+    var isShowingFeedback: Bool = false
 }

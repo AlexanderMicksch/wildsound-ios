@@ -23,6 +23,23 @@ struct QuizView: View {
                     .bold()
                     .padding(.bottom, 10)
                 
+                if viewModel.state.isShowingFeedback, let isCorrect = viewModel.state.lastAnswerCorrect {
+                    ZStack {
+                        Color(isCorrect ? .green : .red)
+                            .opacity(0.7)
+                            .ignoresSafeArea()
+                        Text(isCorrect ? "Richtig!" : "Leider falsch")
+                            .font(.largeTitle)
+                            .foregroundColor(.white)
+                            .bold()
+                    }
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            viewModel.nextQuestionAfterFeedback()
+                        }
+                    }
+                }
+                
                 ForEach(viewModel.state.answerOptions, id: \.id) { animal in
                     Button(action: {
                         viewModel.answer(animal)
