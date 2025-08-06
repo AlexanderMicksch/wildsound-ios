@@ -10,6 +10,8 @@ import Foundation
 class QuizViewModel: ObservableObject {
     
     let allAnimals: [Animal]
+    let soundPlayer = SoundPlayerService()
+    
     @Published private(set) var state: QuizState
     private var questionLimit: Int
 
@@ -58,6 +60,7 @@ class QuizViewModel: ObservableObject {
     }
 
     func nextQuestionAfterFeedback() {
+        stopSound()
         guard let current = state.currentQuestion else { return }
         state.remainingQuestions.removeAll { $0.id == current.id }
         if let next = state.remainingQuestions.first {
@@ -75,6 +78,7 @@ class QuizViewModel: ObservableObject {
     }
 
     func startSecondChance() {
+        stopSound()
         let secondChancePool = state.failedAnimals.shuffled()
         state = QuizState(
             allQuestions: secondChancePool,
@@ -92,6 +96,7 @@ class QuizViewModel: ObservableObject {
     }
 
     func restartQuiz() {
+        stopSound()
         let quizPool = Array(allAnimals.shuffled().prefix(questionLimit))
         state = QuizState(
             allQuestions: quizPool,
@@ -106,6 +111,27 @@ class QuizViewModel: ObservableObject {
             score: 0,
             status: .running
         )
+    }
+    
+    func toggleCurrentAnimalSound() {
+        guard let animal = state.currentQuestion,
+              let url = URL(string: animal.soundURL) else {
+            soundPlayer.setError("Keine gültige Tierstimme vorhanden")
+            return
+        }
+        soundPlayer.toggleSound(from: url)
+    }
+    
+    func playSound(for animal: Animal) {
+        guard let url = URL(string: animal.soundURL) else {
+            soundPlayer.setError("Ungültige URL")
+            return
+        }
+        soundPlayer.playSound(from: url)
+    }
+    
+    func stopSound() {
+        soundPlayer.stop()
     }
 }
 

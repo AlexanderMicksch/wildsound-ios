@@ -23,6 +23,29 @@ struct QuizView: View {
                     .bold()
                     .padding(.bottom, 10)
                 
+                Button {
+                    viewModel.toggleCurrentAnimalSound()
+                } label: {
+                    Image(systemName: viewModel.soundPlayer.isPlaying ? "speaker.wave.2.fill" : "speaker.wave.1")
+                        .font(.system(size: 50))
+                        .padding(10)
+                        .background(.gray.opacity(0.2))
+                        .clipShape(Circle())
+                }
+                .padding(.bottom, 10)
+                .accessibilityLabel(
+                    viewModel.soundPlayer.isPlaying
+                    ? "Tierstimme stoppen"
+                    : "Tierstimme abspielen")
+                .disabled(question.soundURL.isEmpty)
+                
+                if let error = viewModel.soundPlayer.error {
+                    Text(error)
+                        .foregroundStyle(.red)
+                        .font(.caption)
+                        .padding(.top, 3)
+                }
+                
                 if viewModel.state.isShowingFeedback, let isCorrect = viewModel.state.lastAnswerCorrect {
                     ZStack {
                         Color(isCorrect ? .green : .red)
