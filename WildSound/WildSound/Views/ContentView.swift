@@ -21,7 +21,7 @@ struct ContentView: View {
                         .font(.headline)
                     Text("Quelle: \(animal.soundSource.displayName)")
                         .font(.caption)
-                    Text(animal.wikiTitle)
+                    Text(animal.wikiTitleDe)
                         .font(.subheadline)
                 }
             }

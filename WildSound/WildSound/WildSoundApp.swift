@@ -10,9 +10,13 @@ import SwiftData
 
 @main
 struct WildSoundApp: App {
+    
+    @StateObject private var quizViewModel = QuizViewModel(animals: [])
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(quizViewModel)
                 .modelContainer(for: Animal.self)
         }
     }

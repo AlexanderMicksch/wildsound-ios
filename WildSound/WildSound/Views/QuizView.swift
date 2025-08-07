@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct QuizView: View {
-    
-    @ObservedObject var viewModel: QuizViewModel
+    @EnvironmentObject var viewModel: QuizViewModel
     
     var body: some View {
         VStack(spacing: 25) {
@@ -135,6 +134,11 @@ struct QuizView: View {
     }
 }
 
-#Preview {
-    QuizView(viewModel: QuizViewModel(animals: seedAnimals))
+struct QuizView_Previews: PreviewProvider {
+    static var previews: some View {
+        let animals = seedAnimals
+        let viewModel = QuizViewModel(animals: animals)
+        QuizView()
+            .environmentObject(viewModel)
+    }
 }

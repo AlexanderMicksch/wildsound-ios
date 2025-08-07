@@ -24,4 +24,5 @@ struct QuizState {
     var status: QuizStatus
     var lastAnswerCorrect: Bool? = nil
     var isShowingFeedback: Bool = false
+    var wikipediaSummaries: [UUID: WikipediaSummary] = [:]
 }

@@ -8,10 +8,11 @@
 import Foundation
 
 class QuizViewModel: ObservableObject {
-    
+
     let allAnimals: [Animal]
     let soundPlayer = SoundPlayerService()
-    
+    let wikipediaService = WikipediaService()
+
     @Published private(set) var state: QuizState
     private var questionLimit: Int
 
@@ -75,6 +76,9 @@ class QuizViewModel: ObservableObject {
         }
         state.isShowingFeedback = false
         state.lastAnswerCorrect = nil
+        Task {
+            await loadWikipediaSummariesForCurrentOptions()
+        }
     }
 
     func startSecondChance() {
@@ -93,6 +97,9 @@ class QuizViewModel: ObservableObject {
             score: 0,
             status: .secondChance
         )
+        Task {
+            await loadWikipediaSummariesForCurrentOptions()
+        }
     }
 
     func restartQuiz() {
@@ -111,17 +118,21 @@ class QuizViewModel: ObservableObject {
             score: 0,
             status: .running
         )
+        Task {
+            await loadWikipediaSummariesForCurrentOptions()
+        }
     }
-    
+
     func toggleCurrentAnimalSound() {
         guard let animal = state.currentQuestion,
-              let url = URL(string: animal.soundURL) else {
+            let url = URL(string: animal.soundURL)
+        else {
             soundPlayer.setError("Keine gültige Tierstimme vorhanden")
             return
         }
         soundPlayer.toggleSound(from: url)
     }
-    
+
     func playSound(for animal: Animal) {
         guard let url = URL(string: animal.soundURL) else {
             soundPlayer.setError("Ungültige URL")
@@ -129,10 +140,24 @@ class QuizViewModel: ObservableObject {
         }
         soundPlayer.playSound(from: url)
     }
-    
+
     func stopSound() {
         soundPlayer.stop()
     }
+
+    @MainActor
+    func loadWikipediaSummariesForCurrentOptions() async {
+        for animal in state.answerOptions {
+            if state.wikipediaSummaries[animal.id] == nil {
+                if let summary = try? await wikipediaService.fetchSummary(
+                    titleDe: animal.wikiTitleDe,
+                    titleEn: animal.wikiTitleEn
+                ) {
+                    state.wikipediaSummaries[animal.id] = summary
+                }
+            }
+        }
+    }
 }
 
-// TODO: Methoden für Sound, Animationen
+// TODO: Methoden für Animationen
