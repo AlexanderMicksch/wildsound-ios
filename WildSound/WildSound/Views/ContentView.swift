@@ -29,36 +29,36 @@ struct ContentView: View {
                 SeedService.seedIfNeeded(context: modelContext)
             }
             .navigationTitle("Tiere")
-//            .toolbar {
-//                Button("Beispiel-Vogel") {
-//                    addBird()
-//                }
-//                Button("Beispiel-Tier") {
-//                    addMammal()
-//                }
-//            }
+            .toolbar {
+                Button("Beispiel-Vogel") {
+                    addBird()
+                }
+                Button("Beispiel-Tier") {
+                    addMammal()
+                }
+            }
         }
     }
 
-//    func addBird() {
-//        let bird = Animal(
-//            name: "Amsel",
-//            soundURL: "https://example.com/test-bird.mp3",
-//            wikiTitle: "Amsel",
-//            soundSource: "xeno-canto"
-//        )
-//        modelContext.insert(bird)
-//    }
+    func addBird() {
+        let bird = Animal(
+            name: "Amsel",
+            soundURL: "https://example.com/test-bird.mp3",
+            wikiTitleDe: "Amsel",
+            soundSource: .xenoCanto
+        )
+        modelContext.insert(bird)
+    }
 
-//    func addMammal() {
-//        let mammal = Animal(
-//            name: "Tiger",
-//            soundURL: "https://example.com/test-tiger.mp3",
-//            wikiTitle: "Tiger",
-//            soundSource: "firebase"
-//        )
-//        modelContext.insert(mammal)
-//    }
+    func addMammal() {
+        let mammal = Animal(
+            name: "Tiger",
+            soundURL: "https://example.com/test-tiger.mp3",
+            wikiTitleDe: "Tiger",
+            soundSource: .firebase
+        )
+        modelContext.insert(mammal)
+    }
 }
 
 #Preview {
