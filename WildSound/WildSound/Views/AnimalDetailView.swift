@@ -99,8 +99,8 @@ struct AnimalDetailView: View {
 
 #Preview {
     let animal = seedAnimals.first!
-    let tiger = seedAnimals.first { $0.name == "Tiger" }!
+    let wildschwein = seedAnimals.first { $0.name == "Wildschwein" }!
     NavigationStack {
-        AnimalDetailView(animal: tiger)
+        AnimalDetailView(animal: wildschwein)
     }
 }

@@ -7,9 +7,22 @@
 
 import SwiftUI
 import SwiftData
+import Firebase
 
 @main
 struct WildSoundApp: App {
+    
+    init() {
+        #if DEBUG
+        let isPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+        #else
+        let isPreview = false
+        #endif
+        if !isPreview, FirebaseApp.app() == nil {
+            FirebaseApp.configure()
+        }
+       
+    }
     
     @StateObject private var quizViewModel = QuizViewModel(animals: [])
     
