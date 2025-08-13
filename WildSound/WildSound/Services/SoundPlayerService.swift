@@ -19,6 +19,8 @@ final class SoundPlayerService {
     private(set) var isPlaying = false
     private(set) var error: String?
     private(set) var progress: Double = 0.0
+    
+    private let repo = SoundRepository()
 
     func playSound(from url: URL) {
         stop()
@@ -55,6 +57,16 @@ final class SoundPlayerService {
 
         player?.play()
         isPlaying = true
+    }
+    
+    func play(storagePath: String) async {
+        do {
+            let url = try await repo.downloadURL(for: storagePath)
+            playSound(from: url)
+        } catch {
+            self.error = "Sound konnte nicht geladen werden: \(error.localizedDescription)"
+            print("SoundPlayerService.play(storagePath:) error:", error)
+        }
     }
 
     func stop() {
