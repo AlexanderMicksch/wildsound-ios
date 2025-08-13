@@ -123,24 +123,6 @@ class QuizViewModel: ObservableObject {
         }
     }
 
-    func toggleCurrentAnimalSound() {
-        guard let animal = state.currentQuestion,
-            let url = URL(string: animal.soundURL)
-        else {
-            soundPlayer.setError("Keine gültige Tierstimme vorhanden")
-            return
-        }
-        soundPlayer.toggleSound(from: url)
-    }
-
-    func playSound(for animal: Animal) {
-        guard let url = URL(string: animal.soundURL) else {
-            soundPlayer.setError("Ungültige URL")
-            return
-        }
-        soundPlayer.playSound(from: url)
-    }
-
     func stopSound() {
         soundPlayer.stop()
     }
@@ -157,6 +139,33 @@ class QuizViewModel: ObservableObject {
                 }
             }
         }
+    }
+    
+    @MainActor
+    func toggleCurrentAnimalSoundAsync() async {
+        guard let path = currentSoundStoragePath() else {
+            soundPlayer.setError("Kein Storage-Pfad für diese Frage gefunden")
+            return
+        }
+        if soundPlayer.isPlaying {
+            soundPlayer.stop()
+        } else {
+            await soundPlayer.play(storagePath: path)
+        }
+    }
+    
+    func currentSoundStoragePath() -> String? {
+        if let current = state.currentQuestion, !current.storagePath.isEmpty {
+            return current.storagePath
+        }
+        if let first = state.answerOptions.first(where: { !$0.storagePath.isEmpty }) {
+            return first.storagePath
+        }
+        return nil
+    }
+    
+    func canPlayCurrentSound() -> Bool {
+        currentSoundStoragePath() != nil
     }
 }
 

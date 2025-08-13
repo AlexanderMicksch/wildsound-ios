@@ -12,7 +12,7 @@ import SwiftData
 class Animal: Identifiable {
     @Attribute(.unique) var id: UUID
     var name: String
-    var soundURL: String
+    var storagePath: String
     var wikiTitleDe: String
     var wikiTitleEn: String?
     var isFavorite: Bool
@@ -21,7 +21,7 @@ class Animal: Identifiable {
     
     init(id: UUID = UUID(),
          name: String,
-         soundURL: String,
+         storagePath: String,
          wikiTitleDe: String,
          wikiTitleEn: String? = nil,
          isFavorite: Bool = false,
@@ -30,7 +30,7 @@ class Animal: Identifiable {
     {
         self.id = id
         self.name = name
-        self.soundURL = soundURL
+        self.storagePath = storagePath
         self.wikiTitleDe = wikiTitleDe
         self.wikiTitleEn = wikiTitleEn
         self.isFavorite = isFavorite
