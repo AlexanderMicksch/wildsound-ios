@@ -15,21 +15,31 @@ final class QuizViewModel: ObservableObject {
     let wikipediaService = WikipediaService()
 
     @Published private(set) var state: QuizState
+    
     private var questionLimit: Int
+    private var unusedCorrectQueue: [Animal]
+    
+    var hasMoreRoundsInCycle: Bool {
+        !unusedCorrectQueue.isEmpty
+    }
 
-    init(animals: [Animal], questionLimit: Int = 10) {
+    init(animals: [Animal], questionLimit: Int = 6) {
+        let shuffledAnimals = animals.shuffled()
+        let countForThisRound = min(questionLimit, shuffledAnimals.count)
+        let initialRoundPool = Array(shuffledAnimals.prefix(countForThisRound))
+        let remainingAfterFirstRound = Array(shuffledAnimals.dropFirst(countForThisRound))
+
         self.allAnimals = animals
         self.questionLimit = questionLimit
-        
-        let quizPool = Array(animals.shuffled().prefix(questionLimit))
+        self.unusedCorrectQueue = remainingAfterFirstRound
         
         self.state = QuizState(
-            allQuestions: quizPool,
-            remainingQuestions: quizPool,
-            currentQuestion: quizPool.first,
+            allQuestions: initialRoundPool,
+            remainingQuestions: initialRoundPool,
+            currentQuestion: initialRoundPool.first,
             answerOptions: QuizViewModel.generateOptions(
-                for: quizPool.first,
-                from: quizPool
+                for: initialRoundPool.first,
+                from: animals
             ),
             guessedAnimals: [],
             failedAnimals: [],
@@ -91,6 +101,26 @@ final class QuizViewModel: ObservableObject {
         }
     }
 
+    func startNextRound() {
+        stopSound()
+        
+        let quizPool = dequeueRoundPool()
+        
+        state = QuizState(
+            allQuestions: quizPool,
+            remainingQuestions: quizPool,
+            currentQuestion: quizPool.first,
+            answerOptions: QuizViewModel.generateOptions(for: quizPool.first, from: allAnimals),
+            guessedAnimals: [],
+            failedAnimals: [],
+            score: 0,
+            status: .running
+        )
+        
+        Task {
+            await loadWikipediaSummariesForCurrentOptions()
+        }
+    }
     
     func startSecondChance() {
         stopSound()
@@ -117,10 +147,11 @@ final class QuizViewModel: ObservableObject {
     }
 
     
-    func restartQuiz() {
+    func restartQuizFromBeginning() {
         stopSound()
         
-        let quizPool = Array(allAnimals.shuffled().prefix(questionLimit))
+        unusedCorrectQueue = allAnimals.shuffled()
+        let quizPool = dequeueRoundPool()
         
         state = QuizState(
             allQuestions: quizPool,
@@ -139,6 +170,17 @@ final class QuizViewModel: ObservableObject {
         Task {
             await loadWikipediaSummariesForCurrentOptions()
         }
+    }
+    
+    private func dequeueRoundPool() -> [Animal] {
+        if unusedCorrectQueue.isEmpty {
+            unusedCorrectQueue = allAnimals.shuffled()
+        }
+        
+        let countForThisRound = min(questionLimit, unusedCorrectQueue.count)
+        let roundPool = Array(unusedCorrectQueue.prefix(countForThisRound))
+        unusedCorrectQueue.removeFirst(countForThisRound)
+        return roundPool
     }
 
     func stopSound() {

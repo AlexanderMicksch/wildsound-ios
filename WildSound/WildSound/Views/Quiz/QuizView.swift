@@ -122,7 +122,7 @@ struct QuizView: View {
                     }
                     
                     Button("Neue Quizrunde starten") {
-                        viewModel.restartQuiz()
+                        viewModel.startNextRound()
                     }
                     .frame(maxWidth: .infinity)
                     .padding()

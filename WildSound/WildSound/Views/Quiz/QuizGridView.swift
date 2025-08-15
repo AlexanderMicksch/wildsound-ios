@@ -40,7 +40,7 @@ struct QuizGridView: View {
                             .opacity(0.5)
                             .ignoresSafeArea()
                             .cornerRadius(15)
-                        Text(isCorrect ? "Richtg!" : "Leider Falsch")
+                        Text(isCorrect ? "Richtig!" : "Leider Falsch")
                             .font(.largeTitle)
                             .foregroundColor(.white)
                             .bold()
@@ -187,15 +187,25 @@ struct QuizGridView: View {
                         .cornerRadius(15)
                     }
                     
-                    Button("Neue quizrunde starten") {
-                        viewModel.restartQuiz()
+                    if viewModel.hasMoreRoundsInCycle {
+                        Button("Nächste Runde...") {
+                            viewModel.startNextRound()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(.blue.opacity(0.3))
+                        .foregroundColor(.primary)
+                        .cornerRadius(15)
+                    } else {
+                        Button("Spiel neu starten") {
+                            viewModel.restartQuizFromBeginning()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(.blue.opacity(0.3))
+                        .foregroundColor(.primary)
+                        .cornerRadius(15)
                     }
-                    .frame(maxWidth: .infinity)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(.blue.opacity(0.3))
-                    .foregroundColor(.primary)
-                    .cornerRadius(15)
                 }
                 .padding(.horizontal)
             }
