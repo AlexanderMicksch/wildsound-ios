@@ -7,7 +7,8 @@
 
 import Foundation
 
-class QuizViewModel: ObservableObject {
+@MainActor
+final class QuizViewModel: ObservableObject {
 
     let allAnimals: [Animal]
     let soundPlayer = SoundPlayerService()
@@ -127,7 +128,7 @@ class QuizViewModel: ObservableObject {
         soundPlayer.stop()
     }
 
-    @MainActor
+    
     func loadWikipediaSummariesForCurrentOptions() async {
         for animal in state.answerOptions {
             if state.wikipediaSummaries[animal.id] == nil {
@@ -141,7 +142,6 @@ class QuizViewModel: ObservableObject {
         }
     }
     
-    @MainActor
     func toggleCurrentAnimalSoundAsync() async {
         guard let path = currentSoundStoragePath() else {
             soundPlayer.setError("Kein Storage-Pfad für diese Frage gefunden")
