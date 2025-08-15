@@ -12,23 +12,21 @@ import Firebase
 @main
 struct WildSoundApp: App {
     
+    @StateObject private var quizViewModel: QuizViewModel
+    
     init() {
-        #if DEBUG
-        let isPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
-        #else
-        let isPreview = false
-        #endif
-        if !isPreview, FirebaseApp.app() == nil {
+        
+        if FirebaseApp.app() == nil {
             FirebaseApp.configure()
         }
+        
+        _quizViewModel = StateObject(wrappedValue: QuizViewModel(animals: seedAnimals))
        
     }
     
-    @StateObject private var quizViewModel = QuizViewModel(animals: [])
-    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+           QuizGridView()
                 .environmentObject(quizViewModel)
                 .modelContainer(for: Animal.self)
         }

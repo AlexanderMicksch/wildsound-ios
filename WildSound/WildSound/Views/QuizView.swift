@@ -23,7 +23,9 @@ struct QuizView: View {
                     .padding(.bottom, 10)
                 
                 Button {
-                    viewModel.toggleCurrentAnimalSound()
+                    Task {
+                        await viewModel.toggleCurrentAnimalSoundAsync()
+                    }
                 } label: {
                     Image(systemName: viewModel.soundPlayer.isPlaying ? "speaker.wave.2.fill" : "speaker.wave.1")
                         .font(.system(size: 50))
@@ -36,7 +38,7 @@ struct QuizView: View {
                     viewModel.soundPlayer.isPlaying
                     ? "Tierstimme stoppen"
                     : "Tierstimme abspielen")
-                .disabled(question.soundURL.isEmpty)
+                .disabled(!viewModel.canPlayCurrentSound())
                 
                 if let error = viewModel.soundPlayer.error {
                     Text(error)
@@ -134,11 +136,11 @@ struct QuizView: View {
     }
 }
 
-struct QuizView_Previews: PreviewProvider {
-    static var previews: some View {
-        let animals = seedAnimals
-        let viewModel = QuizViewModel(animals: animals)
-        QuizView()
-            .environmentObject(viewModel)
-    }
-}
+//struct QuizView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        let animals = seedAnimals
+//        let viewModel = QuizViewModel(animals: animals)
+//        QuizView()
+//            .environmentObject(viewModel)
+//    }
+//}

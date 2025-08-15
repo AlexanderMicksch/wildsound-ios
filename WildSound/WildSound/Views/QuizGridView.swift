@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import FirebaseStorage
 
 struct QuizGridView: View {
 
@@ -120,9 +119,9 @@ struct QuizGridView: View {
                     .foregroundColor(.gray)
                 }
                 
-                Button(action: {
-                    viewModel.toggleCurrentAnimalSound()
-                }) {
+                Button {
+                    Task { await viewModel.toggleCurrentAnimalSoundAsync() }
+                } label: {
                     ZStack {
                         Circle()
                             .fill(.ultraThinMaterial)
@@ -138,7 +137,7 @@ struct QuizGridView: View {
                 }
                 .padding(.top, 30)
                 .disabled(
-                    viewModel.state.currentQuestion?.soundURL.isEmpty ?? true
+                    !viewModel.canPlayCurrentSound()
                 )
                 .accessibilityLabel(
                     viewModel.soundPlayer.isPlaying
@@ -209,11 +208,11 @@ struct QuizGridView: View {
 
 }
 
-struct QuizGridView_Previews: PreviewProvider {
-    static var previews: some View {
-        let animals = seedAnimals
-        let viewModel = QuizViewModel(animals: animals)
-        QuizGridView()
-            .environmentObject(viewModel)
-    }
-}
+//struct QuizGridView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        let animals = seedAnimals
+//        let viewModel = QuizViewModel(animals: animals)
+//        QuizGridView()
+//            .environmentObject(viewModel)
+//    }
+//}

@@ -97,10 +97,10 @@ struct AnimalDetailView: View {
     }
 }
 
-#Preview {
-    let animal = seedAnimals.first!
-    let wildschwein = seedAnimals.first { $0.name == "Wildschwein" }!
-    NavigationStack {
-        AnimalDetailView(animal: wildschwein)
-    }
-}
+//#Preview {
+//    let animal = seedAnimals.first!
+//    let wildschwein = seedAnimals.first { $0.name == "Wildschwein" }!
+//    NavigationStack {
+//        AnimalDetailView(animal: wildschwein)
+//    }
+//}

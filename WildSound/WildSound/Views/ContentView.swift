@@ -43,7 +43,7 @@ struct ContentView: View {
     func addBird() {
         let bird = Animal(
             name: "Amsel",
-            soundURL: "https://example.com/test-bird.mp3",
+            storagePath: "https://example.com/test-bird.mp3",
             wikiTitleDe: "Amsel",
             soundSource: .xenoCanto
         )
@@ -53,7 +53,7 @@ struct ContentView: View {
     func addMammal() {
         let mammal = Animal(
             name: "Tiger",
-            soundURL: "https://example.com/test-tiger.mp3",
+            storagePath: "https://example.com/test-tiger.mp3",
             wikiTitleDe: "Tiger",
             soundSource: .firebase
         )
