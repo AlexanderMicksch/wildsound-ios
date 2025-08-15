@@ -9,8 +9,8 @@ import Foundation
 
 let seedAnimals: [Animal] = [
     Animal(name: "Wildschwein", storagePath: "sounds/mammals/Wildschwein.mp3", wikiTitleDe: "Wildschwein", soundSource: .xenoCanto),
-    Animal(name: "Tiger", storagePath: "sounds/mammals/Loewe.mp3", wikiTitleDe: "Tiger", soundSource: .firebase),
-    Animal(name: "Löwe", storagePath: "sounds/mammals/Loewe.mp3", wikiTitleDe: "Löwe", soundSource: .firebase),
-    Animal(name: "Wolf", storagePath: "sounds/mammals/Wolf.mp3", wikiTitleDe: "Wolf", soundSource: .firebase),
-    Animal(name: "Elefant", storagePath: "sounds/mammals/Elefant.mp3", wikiTitleDe: "Elefant", soundSource: .firebase)
+    Animal(name: "Tiger", storagePath: "sounds/mammals/Loewe.mp3", wikiTitleDe: "Tiger", soundSource: .xenoCanto),
+    Animal(name: "Löwe", storagePath: "sounds/mammals/Loewe.mp3", wikiTitleDe: "Löwe", soundSource: .xenoCanto),
+    Animal(name: "Wolf", storagePath: "sounds/mammals/Wolf.mp3", wikiTitleDe: "Wolf", soundSource: .xenoCanto),
+    Animal(name: "Elefant", storagePath: "sounds/mammals/Elefant.mp3", wikiTitleDe: "Elefant", soundSource: .xenoCanto)
 ]

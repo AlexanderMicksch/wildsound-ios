@@ -55,7 +55,7 @@ struct ContentView: View {
             name: "Tiger",
             storagePath: "https://example.com/test-tiger.mp3",
             wikiTitleDe: "Tiger",
-            soundSource: .firebase
+            soundSource: .xenoCanto
         )
         modelContext.insert(mammal)
     }

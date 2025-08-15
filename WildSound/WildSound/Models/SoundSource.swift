@@ -7,14 +7,15 @@
 
 import Foundation
 
-enum SoundSource: String, Codable {
-    case firebase
+enum SoundSource: String, Codable, CaseIterable {
+    case freesound
     case xenoCanto
+    
     
     var displayName: String {
         switch self {
-        case .firebase:
-            return "Firebase"
+        case .freesound:
+            return "Freesound.org"
         case .xenoCanto:
             return "Xeno-Canto"
         }
