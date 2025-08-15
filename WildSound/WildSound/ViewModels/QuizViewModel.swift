@@ -28,6 +28,10 @@ final class QuizViewModel: ObservableObject {
     var globalFailedAnimals: [Animal] {
         allAnimals.filter { globalFailedAcrossRounds.contains($0.id) }
     }
+    
+    var hasGlobalFailedLeft: Bool {
+        !globalFailedAcrossRounds.isEmpty
+    }
 
     init(animals: [Animal], questionLimit: Int = 6) {
         let shuffledAnimals = animals.shuffled()
@@ -164,6 +168,31 @@ final class QuizViewModel: ObservableObject {
         Task {
             await loadWikipediaSummariesForCurrentOptions()
         }
+    }
+    
+    func playGlobalFailedAcrossRounds() {
+        stopSound()
+        
+        let pool = allAnimals.filter { globalFailedAcrossRounds.contains($0.id) }
+            .shuffled()
+        
+        guard !pool.isEmpty else { return }
+        
+        state = QuizState(
+            allQuestions: pool,
+            remainingQuestions: pool,
+            currentQuestion: pool.first,
+            answerOptions: QuizViewModel.generateOptions(
+                for: pool.first,
+                from: allAnimals
+            ),
+            guessedAnimals: [],
+            failedAnimals: [],
+            score: 0,
+            status: .secondChance
+        )
+        
+        Task { await loadWikipediaSummariesForCurrentOptions() }
     }
 
     func restartQuizFromBeginning() {

@@ -206,6 +206,17 @@ struct QuizGridView: View {
                         .foregroundColor(.primary)
                         .cornerRadius(15)
                     }
+                    
+                    if !viewModel.hasMoreRoundsInCycle, viewModel.hasGlobalFailedLeft {
+                        Button("Alle falschen nochmal") {
+                            viewModel.playGlobalFailedAcrossRounds()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(.blue.opacity(0.3))
+                        .foregroundColor(.primary)
+                        .cornerRadius(15)
+                    }
                 }
                 .padding(.horizontal)
             }
