@@ -43,6 +43,9 @@ private struct RootTabs: View {
         TabView {
             QuizGridView()
                 .tabItem { Label("Quiz", systemImage: "music.note") }
+            
+            CollectionsView()
+                .tabItem { Label("Sammlung", systemImage: "square.grid.2x2") }
 
             #if DEBUG
                 if isAdminEnabled {
