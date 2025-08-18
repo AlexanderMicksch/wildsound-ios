@@ -11,8 +11,9 @@ import SwiftUI
 struct RootContainerView: View {
     @Query(sort: \Animal.name, order: .forward) private var storedAnimals:
         [Animal]
-
+    
     var body: some View {
+        
         let initialAnimals =
             storedAnimals.isEmpty ? seedAnimals : Array(storedAnimals)
         RootTabs(initialAnimals: initialAnimals)
@@ -22,6 +23,8 @@ struct RootContainerView: View {
 private struct RootTabs: View {
     let initialAnimals: [Animal]
     @StateObject private var quizViewModel: QuizViewModel
+    @Environment(\.modelContext) private var modelContext
+
 
     #if DEBUG
         private let isAdminEnabled = ProcessInfo.processInfo.arguments.contains(
@@ -54,6 +57,9 @@ private struct RootTabs: View {
             #endif
         }
         .environmentObject(quizViewModel)
+        .onAppear {
+            quizViewModel.setModelContext(modelContext)
+        }
     }
 }
 

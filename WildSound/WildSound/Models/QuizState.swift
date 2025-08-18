@@ -7,12 +7,6 @@
 
 import Foundation
 
-enum QuizStatus {
-    case running
-    case finished
-    case secondChance
-}
-
 struct QuizState {
     var allQuestions: [Animal]              // Alle Tiere, aus denen das Quiz besteht
     var remainingQuestions: [Animal]        // verbleibende Fragen
@@ -25,4 +19,10 @@ struct QuizState {
     var lastAnswerCorrect: Bool? = nil
     var isShowingFeedback: Bool = false
     var wikipediaSummaries: [UUID: WikipediaSummary] = [:]
+}
+
+enum QuizStatus {
+    case running
+    case finished
+    case secondChance
 }

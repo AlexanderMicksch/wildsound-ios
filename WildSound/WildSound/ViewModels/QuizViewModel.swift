@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 
 @MainActor
 final class QuizViewModel: ObservableObject {
@@ -20,6 +21,7 @@ final class QuizViewModel: ObservableObject {
 
     private var questionLimit: Int
     private var unusedCorrectQueue: [Animal]
+    private var modelContext: ModelContext?
 
     var hasMoreRoundsInCycle: Bool {
         !unusedCorrectQueue.isEmpty
@@ -28,7 +30,7 @@ final class QuizViewModel: ObservableObject {
     var globalFailedAnimals: [Animal] {
         allAnimals.filter { globalFailedAcrossRounds.contains($0.id) }
     }
-    
+
     var hasGlobalFailedLeft: Bool {
         !globalFailedAcrossRounds.isEmpty
     }
@@ -60,6 +62,10 @@ final class QuizViewModel: ObservableObject {
         )
     }
 
+    func setModelContext(_ context: ModelContext) {
+        self.modelContext = context
+    }
+
     // Antwortmöglichkeiten erzeugen
     static func generateOptions(for animal: Animal?, from allAnimals: [Animal])
         -> [Animal]
@@ -86,6 +92,14 @@ final class QuizViewModel: ObservableObject {
             state.lastAnswerCorrect = true
 
             globalFailedAcrossRounds.remove(current.id)
+
+            if let index = allAnimals.firstIndex(where: { $0.id == current.id })
+            {
+                allAnimals[index].guessedCount += 1
+                if let ctx = modelContext {
+                    try? ctx.save()
+                }
+            }
 
         } else {
             state.failedAnimals.append(current)
@@ -120,7 +134,7 @@ final class QuizViewModel: ObservableObject {
 
     func startNextRound() {
         stopSound()
-        
+
         for animal in state.failedAnimals {
             globalFailedAcrossRounds.insert(animal.id)
         }
@@ -169,15 +183,17 @@ final class QuizViewModel: ObservableObject {
             await loadWikipediaSummariesForCurrentOptions()
         }
     }
-    
+
     func playGlobalFailedAcrossRounds() {
         stopSound()
-        
-        let pool = allAnimals.filter { globalFailedAcrossRounds.contains($0.id) }
-            .shuffled()
-        
+
+        let pool = allAnimals.filter {
+            globalFailedAcrossRounds.contains($0.id)
+        }
+        .shuffled()
+
         guard !pool.isEmpty else { return }
-        
+
         state = QuizState(
             allQuestions: pool,
             remainingQuestions: pool,
@@ -191,13 +207,13 @@ final class QuizViewModel: ObservableObject {
             score: 0,
             status: .secondChance
         )
-        
+
         Task { await loadWikipediaSummariesForCurrentOptions() }
     }
 
     func restartQuizFromBeginning() {
         stopSound()
-        
+
         globalFailedAcrossRounds.removeAll()
 
         unusedCorrectQueue = allAnimals.shuffled()
@@ -249,6 +265,16 @@ final class QuizViewModel: ObservableObject {
             }
         }
     }
+    
+    func ensureSummary(for animal: Animal) async {
+        if state.wikipediaSummaries[animal.id] != nil { return }
+        if let summary = try? await wikipediaService.fetchSummary(
+            titleDe: animal.wikiTitleDe,
+            titleEn: animal.wikiTitleEn
+        ) {
+            state.wikipediaSummaries[animal.id] = summary
+        }
+    }
 
     func toggleCurrentAnimalSoundAsync() async {
         guard let path = currentSoundStoragePath() else {
@@ -277,6 +303,20 @@ final class QuizViewModel: ObservableObject {
     func canPlayCurrentSound() -> Bool {
         currentSoundStoragePath() != nil
     }
+
+    func toggleFavorite(for animal: Animal) {
+        animal.isFavorite.toggle()
+        if let ctx = modelContext { try? ctx.save() }
+    }
+
+    func toggleFavorite(id: UUID) {                   
+        if let animal = allAnimals.first(where: { $0.id == id }) {
+            toggleFavorite(for: animal)
+        }
+    }
+
+    func isFavorite(_ animal: Animal) -> Bool { animal.isFavorite }
+
 }
 
 // TODO: Methoden für Animationen

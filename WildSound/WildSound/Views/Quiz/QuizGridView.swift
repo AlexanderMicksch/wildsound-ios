@@ -10,7 +10,7 @@ import SwiftUI
 struct QuizGridView: View {
 
     @EnvironmentObject var viewModel: QuizViewModel
-
+    
     let columns: [GridItem] = [
         GridItem(.flexible()),
         GridItem(.flexible()),
