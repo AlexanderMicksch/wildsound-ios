@@ -80,7 +80,7 @@ struct QuizGridView: View {
                                             Image(systemName: "photo")
                                                 .resizable()
                                                 .scaledToFit()
-                                                .frame(width: 120, height: 120)
+                                                .frame(width: 180, height: 160)
                                                 .foregroundColor(.gray)
                                         @unknown default:
                                             EmptyView()
