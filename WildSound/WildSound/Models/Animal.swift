@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class Animal: Identifiable {
+class Animal: Identifiable, Hashable {
     @Attribute(.unique) var id: UUID
     var name: String
     var storagePath: String
@@ -36,5 +36,13 @@ class Animal: Identifiable {
         self.isFavorite = isFavorite
         self.guessedCount = guessedCount
         self.soundSource = soundSource
+    }
+    
+    static func == (lhs: Animal, rhs: Animal) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
