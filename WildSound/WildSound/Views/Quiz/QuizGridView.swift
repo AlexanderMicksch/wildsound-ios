@@ -79,11 +79,3 @@ struct QuizGridView: View {
     }
 }
 
-//struct QuizGridView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        let animals = seedAnimals
-//        let viewModel = QuizViewModel(animals: animals)
-//        QuizGridView()
-//            .environmentObject(viewModel)
-//    }
-//}

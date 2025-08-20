@@ -10,6 +10,7 @@ import SwiftUI
 struct AnimalDetailView: View {
     let animal: Animal
     @StateObject private var viewModel: AnimalDetailViewModel
+    @EnvironmentObject private var quizViewModel: QuizViewModel
 
     init(animal: Animal) {
         self.animal = animal
@@ -18,96 +19,59 @@ struct AnimalDetailView: View {
         )
     }
 
+    private var headerURL: URL? {
+        viewModel.summary?.thumbnailURL
+            ?? quizViewModel.state.wikipediaSummaries[animal.id]?.thumbnailURL
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
 
+                DetailHeader(url: headerURL, animal: animal)
+                    .environmentObject(quizViewModel)
+                
+                DetailSoundBar(animal: animal)
+                    .environmentObject(quizViewModel)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 8)
+
+                Text(viewModel.summary?.title ?? animal.name)
+                    .font(.title2).bold()
+                    .accessibilityAddTraits(.isHeader)
+
+                if let error = quizViewModel.soundPlayer.error {
+                    Text(error).foregroundStyle(.red).font(.caption)
+                }
+
+               
                 if viewModel.isLoading {
                     HStack {
                         Spacer()
                         ProgressView("Lade Wikipedia...")
                         Spacer()
                     }
-                }
-
-                if let error = viewModel.error {
+                } else if let error = viewModel.error {
                     Text(error)
                         .foregroundStyle(.red)
                         .font(.footnote)
-                }
-
-                if let summary = viewModel.summary {
-                    if let url = summary.thumbnailURL {
-                        AsyncImage(url: url) { phase in
-                            switch phase {
-                            case .empty:
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 10).fill(
-                                        .gray.opacity(0.2)
-                                    ).frame(height: 220)
-                                    ProgressView()
-                                }
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .clipShape(
-                                        RoundedRectangle(cornerRadius: 10)
-                                    )
-                            case .failure:
-                                placeholderImage
-                            @unknown default:
-                                placeholderImage
-                            }
-                        }
-                        .accessibilityHidden(true)
-                    } else {
-                        placeholderImage
-                    }
-
-                    Text(summary.title)
-                        .font(.title2).bold()
-                        .accessibilityAddTraits(.isHeader)
-
-                    if let extract = summary.extract, !extract.isEmpty {
-                        Text(extract).font(.body)
-                    } else {
-                        Text("Keine Beschreibung verfügbar")
-                            .foregroundStyle(.secondary)
-                            .font(.footnote)
-                    }
-
-                } else if !viewModel.isLoading && viewModel.error == nil {
-                    Text("Keine Daten verfügbar")
-                        .foregroundStyle(.secondary)
-                        .font(.footnote)
+                } else if let extract = viewModel.summary?.extract,
+                    !extract.isEmpty
+                {
+                    Text(extract).font(.body)
+                } else {
+                    Text("Keine Beschreibung verfügbar")
+                        .foregroundStyle(.secondary).font(.footnote)
                 }
             }
-
             .padding()
         }
         .navigationTitle(animal.name)
         .navigationBarTitleDisplayMode(.inline)
-        .task { await viewModel.load() }
-    }
-
-    private var placeholderImage: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 10)
-                .fill(.gray.opacity(0.2))
-                .frame(height: 220)
-            Image(systemName: "photo")
-                .font(.system(size: 28))
-                .foregroundStyle(.gray)
+        .task {
+            await viewModel.load()
         }
-        .accessibilityLabel("Kein Bild verfügbar")
+        .onDisappear { quizViewModel.stopSound() }
     }
 }
 
-//#Preview {
-//    let animal = seedAnimals.first!
-//    let wildschwein = seedAnimals.first { $0.name == "Wildschwein" }!
-//    NavigationStack {
-//        AnimalDetailView(animal: wildschwein)
-//    }
-//}

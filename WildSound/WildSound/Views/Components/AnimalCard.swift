@@ -21,7 +21,8 @@ struct AnimalCard: View {
         VStack {
             ZStack(alignment: .topLeading) {
                 AnimalThumbnail(url: thumbURL)
-                    .frame(width: 180, height: 160)
+                    .frame(width: CardMetrics.imageSize.width,
+                           height: CardMetrics.imageSize.height)
                     .clipShape(RoundedRectangle(cornerRadius: 15))
 
                 if animal.guessedCount > 0 {
@@ -38,7 +39,8 @@ struct AnimalCard: View {
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
         }
-        .frame(width: 190, height: 200)
+        .frame(width: CardMetrics.cardSize.width,
+               height: CardMetrics.cardSize.height)
         .background(.thinMaterial)
         .cornerRadius(15)
         .shadow(radius: 2)

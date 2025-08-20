@@ -85,7 +85,7 @@ final class SoundPlayerService {
             playSound(from: url)
         }
     }
-
+    
     private func removeTimeObserver() {
         if let token = timeObserverToken {
             player?.removeTimeObserver(token)
@@ -100,5 +100,15 @@ final class SoundPlayerService {
     deinit {
         removeTimeObserver()
         cancellables.removeAll()
+    }
+}
+
+extension SoundPlayerService {
+    func toggle(storagePath: String) async {
+        if isPlaying {
+            stop()
+        } else {
+            await play(storagePath: storagePath)
+        }
     }
 }

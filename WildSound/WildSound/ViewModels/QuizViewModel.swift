@@ -316,7 +316,8 @@ final class QuizViewModel: ObservableObject {
     }
 
     func isFavorite(_ animal: Animal) -> Bool { animal.isFavorite }
-
 }
+
+
 
 // TODO: Methoden für Animationen
