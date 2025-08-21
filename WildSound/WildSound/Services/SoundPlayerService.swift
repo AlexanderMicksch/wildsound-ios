@@ -19,27 +19,31 @@ final class SoundPlayerService {
     private(set) var isPlaying = false
     private(set) var error: String?
     private(set) var progress: Double = 0.0
-    
+    private(set) var currentPath: String?
+    private(set) var currentURL: URL?
+
     private let repo = SoundRepository()
 
     func playSound(from url: URL) {
         stop()
         error = nil
-        let playerItem = AVPlayerItem(url: url)
-        player = AVPlayer(playerItem: playerItem)
+
+        let item = AVPlayerItem(url: url)
+        player = AVPlayer(playerItem: item)
+        currentURL = url
 
         NotificationCenter.default.publisher(
             for: AVPlayerItem.didPlayToEndTimeNotification,
-            object: playerItem
+            object: item
         )
         .sink { [weak self] _ in self?.stop() }
         .store(in: &cancellables)
 
         NotificationCenter.default.publisher(
             for: AVPlayerItem.failedToPlayToEndTimeNotification,
-            object: playerItem
+            object: item
         )
-        .sink { [weak self] notification in
+        .sink { [weak self] _ in
             self?.error = "Audio konnte nicht abgespielt werden"
             self?.stop()
         }
@@ -49,22 +53,29 @@ final class SoundPlayerService {
             forInterval: CMTime(seconds: 0.2, preferredTimescale: 600),
             queue: .main
         ) { [weak self] time in
-            guard let duration = self?.player?.currentItem?.duration.seconds,
-                duration > 0
+            guard
+                let self,
+                let item = self.player?.currentItem,
+                item.status == .readyToPlay
             else { return }
-            self?.progress = time.seconds / duration
+
+            let duration = item.duration.seconds
+            guard duration.isFinite, duration > 0 else { return }
+            self.progress = min(max(time.seconds / duration, 0), 1)
         }
 
         player?.play()
         isPlaying = true
     }
-    
+
     func play(storagePath: String) async {
         do {
             let url = try await repo.downloadURL(for: storagePath)
+            currentPath = storagePath
             playSound(from: url)
         } catch {
-            self.error = "Sound konnte nicht geladen werden: \(error.localizedDescription)"
+            self.error =
+                "Sound konnte nicht geladen werden: \(error.localizedDescription)"
             print("SoundPlayerService.play(storagePath:) error:", error)
         }
     }
@@ -74,18 +85,29 @@ final class SoundPlayerService {
         player = nil
         isPlaying = false
         progress = 0.0
+        currentPath = nil
         removeTimeObserver()
         cancellables.removeAll()
     }
-    
-    func toggleSound(from url: URL) {
-        if isPlaying {
-            stop()
-        } else {
-            playSound(from: url)
+
+    func toggle(storagePath: String) async {
+        do {
+            let url = try await repo.downloadURL(for: storagePath)
+            if isPlaying, let cur = currentURL,
+                cur.absoluteString == url.absoluteString
+            {
+                stop()
+            } else {
+                currentPath = storagePath
+                playSound(from: url)
+            }
+        } catch {
+            self.error =
+                "Sound konnte nicht geladen werden: \(error.localizedDescription)"
+            print("SoundPlayerService.toggle(storagePath:) error:", error)
         }
     }
-    
+
     private func removeTimeObserver() {
         if let token = timeObserverToken {
             player?.removeTimeObserver(token)
@@ -100,15 +122,5 @@ final class SoundPlayerService {
     deinit {
         removeTimeObserver()
         cancellables.removeAll()
-    }
-}
-
-extension SoundPlayerService {
-    func toggle(storagePath: String) async {
-        if isPlaying {
-            stop()
-        } else {
-            await play(storagePath: storagePath)
-        }
     }
 }

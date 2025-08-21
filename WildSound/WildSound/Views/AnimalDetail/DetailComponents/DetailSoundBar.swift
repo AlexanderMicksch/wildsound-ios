@@ -8,17 +8,20 @@
 import SwiftUI
 
 struct DetailSoundBar: View {
-    
+
     @EnvironmentObject var quizViewModel: QuizViewModel
     let animal: Animal
-    
+
     var body: some View {
         HStack {
             Spacer()
-            SoundRoundButtton(isPlaying: quizViewModel.soundPlayer.isPlaying,
-                              isEnabled: !animal.storagePath.isEmpty,
+            SoundRoundButtton(
+                isPlaying: quizViewModel.soundPlayer.isPlaying,
+                isEnabled: !animal.storagePath.isEmpty,
             ) {
-                quizViewModel.toggleSound(for: animal)
+                Task {
+                    await quizViewModel.toggleSound(for: animal)
+                }
             }
             Spacer()
         }
@@ -26,4 +29,3 @@ struct DetailSoundBar: View {
         .accessibilityLabel("Audio-Steuerung für \(animal.name)")
     }
 }
-

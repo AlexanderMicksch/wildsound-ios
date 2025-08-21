@@ -265,7 +265,7 @@ final class QuizViewModel: ObservableObject {
             }
         }
     }
-    
+
     func ensureSummary(for animal: Animal) async {
         if state.wikipediaSummaries[animal.id] != nil { return }
         if let summary = try? await wikipediaService.fetchSummary(
@@ -309,15 +309,22 @@ final class QuizViewModel: ObservableObject {
         if let ctx = modelContext { try? ctx.save() }
     }
 
-    func toggleFavorite(id: UUID) {                   
+    func toggleFavorite(id: UUID) {
         if let animal = allAnimals.first(where: { $0.id == id }) {
             toggleFavorite(for: animal)
         }
     }
 
     func isFavorite(_ animal: Animal) -> Bool { animal.isFavorite }
+
+    func toggleSound(for animal: Animal) async {
+        guard !animal.storagePath.isEmpty else {
+            soundPlayer.setError(
+                "Kein Storage-Pfad für \(animal.name) hinterlegt"
+            )
+            return
+        }
+        await soundPlayer.toggle(storagePath: animal.storagePath)
+    }
 }
-
-
-
 // TODO: Methoden für Animationen
