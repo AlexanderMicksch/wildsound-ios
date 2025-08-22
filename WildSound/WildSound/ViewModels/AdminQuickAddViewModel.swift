@@ -16,6 +16,7 @@ final class AdminQuickAddViewModel: ObservableObject {
     @Published var wikiTitleDeInput: String = ""
     @Published var showSavedBanner: Bool = false
     @Published var selectedSoundSource: SoundSource = .xenoCanto
+    @Published var selectedImageCrop: ImageCrop = .center
     
      var isValid: Bool {
         let trimmedName = nameInput.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -45,7 +46,8 @@ final class AdminQuickAddViewModel: ObservableObject {
             wikiTitleEn: nil,
             isFavorite: false,
             guessedCount: 0,
-            soundSource: selectedSoundSource
+            soundSource: selectedSoundSource,
+            imageCrop: .center
         )
         
         context.insert(newAnimal)
@@ -59,6 +61,7 @@ final class AdminQuickAddViewModel: ObservableObject {
         nameInput = ""
         storagePathInput = ""
         wikiTitleDeInput = ""
+        selectedImageCrop = .center
     }
     
      func deleteAnimals(at offsets: IndexSet, from animals: [Animal], using context: ModelContext) throws {

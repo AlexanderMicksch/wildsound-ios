@@ -50,6 +50,7 @@ struct QuizResultsView: View {
                             AnimalResultTile(
                                 title: animal.name,
                                 url: resultViewModel.thumbURL(for: animal),
+                                crop: animal.imageCrop,
                                 tint: .green
                             )
                         }
@@ -65,6 +66,7 @@ struct QuizResultsView: View {
                             AnimalResultTile(
                                 title: animal.name,
                                 url: resultViewModel.thumbURL(for: animal),
+                                crop: animal.imageCrop,
                                 tint: .red
                             )
                         }

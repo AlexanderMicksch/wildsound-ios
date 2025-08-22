@@ -9,6 +9,8 @@ import SwiftUI
 
 struct AnimalsListSectionView: View {
     
+    @EnvironmentObject var quizViewModel: QuizViewModel
+    
     let animals: [Animal]
     let onDelete: (IndexSet) -> Void
     
@@ -20,7 +22,9 @@ struct AnimalsListSectionView: View {
             } else {
                 List {
                     ForEach(animals, id: \.id) { animal in
-                        AnimalRowView(animal: animal)
+                        AnimalCropRowView(animal: animal)
+                            .environmentObject(quizViewModel)
+                            .task { await quizViewModel.ensureSummary(for: animal) }
                     }
                     .onDelete(perform: onDelete)
                 }

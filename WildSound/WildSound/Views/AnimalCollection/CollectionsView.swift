@@ -17,7 +17,9 @@ struct CollectionsView: View {
     ]
     
     private var visibleAnimals: [Animal] {
-        let sorted = viewModel.allAnimals.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        let sorted = viewModel.allAnimals.sorted {
+            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
         return collectionViewModel.filter(sorted)
     }
         var body: some View {

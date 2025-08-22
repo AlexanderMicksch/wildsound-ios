@@ -66,7 +66,7 @@ struct AdminQuickAddView: View {
             }
             .overlay(alignment: .bottom) {
                 if adminViewModel.showSavedBanner {
-                    SavedBannerView(text: "Gespeicher CHECK")
+                    SavedBannerView(text: "Gespeichert CHECK")
                         .transition(
                             .move(edge: .bottom).combined(with: .opacity)
                         )

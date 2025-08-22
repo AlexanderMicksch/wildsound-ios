@@ -21,12 +21,12 @@ struct AnimalOptionCard: View {
     var body: some View {
         Button(action: action) {
             VStack {
-                AnimalThumbnail(url: thumbURL)
-                    .frame(
-                        width: CardMetrics.imageSize.width,
-                        height: CardMetrics.imageSize.height
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                AnimalThumbnail(
+                    url: thumbURL,
+                    crop: animal.imageCrop,
+                    size: CardMetrics.imageSize
+                )
+                    
 
                 Text(animal.name)
                     .font(.headline)

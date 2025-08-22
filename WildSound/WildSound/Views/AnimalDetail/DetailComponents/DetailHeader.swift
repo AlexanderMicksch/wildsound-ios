@@ -20,30 +20,35 @@ struct DetailHeader: View {
     }
     
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            AnimalThumbnail(url: url)
-                .frame(maxWidth: .infinity)
-                .frame(height: 240)
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14)
-                        .strokeBorder(Color.black.opacity(0.05))
+        GeometryReader { geo in
+            ZStack(alignment: .topLeading) {
+                AnimalThumbnail(
+                    url: url,
+                    crop: animal.imageCrop,
+                cornerRadius: 14,
+                    size: .init(width: geo.size.width, height: 240)
                 )
-            
-            if animal.guessedCount > 0 {
-                GuessBadge(count: animal.guessedCount)
-                    .padding(.leading, 8)
-                    .padding(.top, 8)
-            }
-            
-            HStack {
-                Spacer()
-                FavoriteStar(animal: animal)
-                    .environmentObject(quizViewModel)
-                    .padding(.trailing, 8)
-                    .padding(.top, 8)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14)
+                            .strokeBorder(Color.black.opacity(0.05))
+                    )
+                
+                if animal.guessedCount > 0 {
+                    GuessBadge(count: animal.guessedCount)
+                        .padding(.leading, 8)
+                        .padding(.top, 8)
+                }
+                
+                HStack {
+                    Spacer()
+                    FavoriteStar(animal: animal)
+                        .environmentObject(quizViewModel)
+                        .padding(.trailing, 8)
+                        .padding(.top, 8)
+                }
             }
         }
+        .frame(height: 240)
         .accessibilityElement(children: .contain)
     }
 }

@@ -20,11 +20,13 @@ struct AnimalCard: View {
     var body: some View {
         VStack {
             ZStack(alignment: .topLeading) {
-                AnimalThumbnail(url: thumbURL)
-                    .frame(width: CardMetrics.imageSize.width,
-                           height: CardMetrics.imageSize.height)
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
-
+                AnimalThumbnail(
+                    url: thumbURL,
+                    crop: animal.imageCrop,
+                    cornerRadius: 15,
+                    size: CardMetrics.imageSize
+                )
+                   
                 if animal.guessedCount > 0 {
                     GuessBadge(count: animal.guessedCount)
                         .padding(.leading, 4)

@@ -18,6 +18,7 @@ class Animal: Identifiable, Hashable {
     var isFavorite: Bool
     var guessedCount: Int
     var soundSource: SoundSource
+    var imageCrop: ImageCrop
     
     init(id: UUID = UUID(),
          name: String,
@@ -26,7 +27,8 @@ class Animal: Identifiable, Hashable {
          wikiTitleEn: String? = nil,
          isFavorite: Bool = false,
          guessedCount: Int = 0,
-         soundSource: SoundSource)
+         soundSource: SoundSource,
+         imageCrop: ImageCrop = .center)
     {
         self.id = id
         self.name = name
@@ -36,6 +38,7 @@ class Animal: Identifiable, Hashable {
         self.isFavorite = isFavorite
         self.guessedCount = guessedCount
         self.soundSource = soundSource
+        self.imageCrop = imageCrop
     }
     
     static func == (lhs: Animal, rhs: Animal) -> Bool {

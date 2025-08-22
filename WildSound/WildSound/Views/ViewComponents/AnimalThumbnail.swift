@@ -9,19 +9,27 @@ import SwiftUI
 
 struct AnimalThumbnail: View {
     let url: URL?
+    var crop: ImageCrop = .center
+    var cornerRadius: CGFloat = 15
+    var size: CGSize = CardMetrics.imageSize
 
     var body: some View {
-        Group {
+        ZStack {
             if let url {
                 AsyncImage(url: url) { phase in
                     switch phase {
                     case .empty:
-                        ProgressView().frame(
-                            maxWidth: .infinity,
-                            maxHeight: .infinity
-                        )
+                        Placeholder()
                     case .success(let img):
-                        img.resizable().scaledToFill()
+                        img
+                            .resizable()
+                            .scaledToFill()
+                            .frame(
+                                width: size.width,
+                                height: size.height,
+                                alignment: crop.alignment
+                            )
+                            .clipped()
                     case .failure:
                         Placeholder()
                     @unknown default:
@@ -32,7 +40,13 @@ struct AnimalThumbnail: View {
                 Placeholder()
             }
         }
-        .background(Color.gray.opacity(0.1))
+        .frame(width: size.width, height: size.height)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+        .background(
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .fill(Color.gray.opacity(0.1))
+        )
+        .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
 
     @ViewBuilder
@@ -43,5 +57,7 @@ struct AnimalThumbnail: View {
                 .imageScale(.large)
                 .foregroundStyle(.gray)
         }
+        .frame(width: size.width, height: size.height)
+        .clipped()
     }
 }
