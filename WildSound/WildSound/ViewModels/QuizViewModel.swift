@@ -22,6 +22,7 @@ final class QuizViewModel: ObservableObject {
     private var questionLimit: Int
     private var unusedCorrectQueue: [Animal]
     private var modelContext: ModelContext?
+    private var appStats: AppStats?
 
     var hasMoreRoundsInCycle: Bool {
         !unusedCorrectQueue.isEmpty
@@ -64,6 +65,15 @@ final class QuizViewModel: ObservableObject {
 
     func setModelContext(_ context: ModelContext) {
         self.modelContext = context
+        let ctx = context
+        if let existing = try? ctx.fetch(FetchDescriptor<AppStats>()).first {
+            self.appStats = existing
+        } else {
+            let stats = AppStats(globalScore: 0)
+            ctx.insert(stats)
+            try? ctx.save()
+            self.appStats = stats
+        }
     }
 
     // Antwortmöglichkeiten erzeugen
@@ -82,6 +92,7 @@ final class QuizViewModel: ObservableObject {
         return options.shuffled()
     }
 
+    
     // Antwort prüfen
     func answer(_ animal: Animal) {
         guard let current = state.currentQuestion else { return }
@@ -90,15 +101,19 @@ final class QuizViewModel: ObservableObject {
             state.guessedAnimals.append(current)
             state.score += 1
             state.lastAnswerCorrect = true
-
             globalFailedAcrossRounds.remove(current.id)
 
+            if let stats = appStats {
+                stats.globalScore += 1
+            }
+            
             if let index = allAnimals.firstIndex(where: { $0.id == current.id })
             {
                 allAnimals[index].guessedCount += 1
-                if let ctx = modelContext {
-                    try? ctx.save()
-                }
+            }
+            
+            if let ctx = modelContext {
+                try? ctx.save()
             }
 
         } else {
@@ -108,6 +123,7 @@ final class QuizViewModel: ObservableObject {
         state.isShowingFeedback = true
     }
 
+    
     func nextQuestionAfterFeedback() {
         stopSound()
         guard let current = state.currentQuestion else { return }
@@ -123,6 +139,7 @@ final class QuizViewModel: ObservableObject {
         } else {
             state.currentQuestion = nil
             state.status = .finished
+            resetScoreIfCycleCompleted()
         }
         state.isShowingFeedback = false
         state.lastAnswerCorrect = nil
@@ -151,7 +168,7 @@ final class QuizViewModel: ObservableObject {
             ),
             guessedAnimals: [],
             failedAnimals: [],
-            score: 0,
+            score: state.score,
             status: .running
         )
 
@@ -175,7 +192,7 @@ final class QuizViewModel: ObservableObject {
             ),
             guessedAnimals: [],
             failedAnimals: [],
-            score: 0,
+            score: state.score,
             status: .secondChance
         )
 
@@ -204,7 +221,7 @@ final class QuizViewModel: ObservableObject {
             ),
             guessedAnimals: [],
             failedAnimals: [],
-            score: 0,
+            score: state.score,
             status: .secondChance
         )
 
@@ -247,6 +264,17 @@ final class QuizViewModel: ObservableObject {
         let roundPool = Array(unusedCorrectQueue.prefix(countForThisRound))
         unusedCorrectQueue.removeFirst(countForThisRound)
         return roundPool
+    }
+    
+    private func resetScoreIfCycleCompleted() {
+        let noRoundsLeft = unusedCorrectQueue.isEmpty
+        let noCurrentLeft = state.remainingQuestions.isEmpty
+        let noFailedLeft = state.failedAnimals.isEmpty
+        let noGlobalFailedLeft = globalFailedAcrossRounds.isEmpty
+        
+        if noRoundsLeft && noCurrentLeft && noFailedLeft && noGlobalFailedLeft {
+            state.score = 0
+        }
     }
 
     func stopSound() {
