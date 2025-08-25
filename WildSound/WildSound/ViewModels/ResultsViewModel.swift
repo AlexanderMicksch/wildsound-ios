@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import os
 
 @MainActor
 final class ResultsViewModel: ObservableObject {
@@ -16,6 +17,7 @@ final class ResultsViewModel: ObservableObject {
     private var modelContext: ModelContext?
     private var appStats: AppStats?
     private var summaries: [UUID: WikipediaSummary] = [:]
+    private let logger = Logger(subsystem: "WildSound", category: "Results")
     
     func setModelContext(_ ctx: ModelContext, summaries: [UUID: WikipediaSummary]) {
         modelContext = ctx
@@ -32,17 +34,33 @@ final class ResultsViewModel: ObservableObject {
             } else {
                 let stats = AppStats(globalScore: 0)
                 ctx.insert(stats)
-                try ctx.save()
+                do { try ctx.save() }
+                catch {
+                    logger.error("SwiftData initial save (highscore 0) failed: \(String(describing: error))")
+                }
                 appStats = stats
                 highscore = 0
             }
-        } catch { }
+        } catch {
+            logger.error("SwiftData fetch AppSats in Results failed: \(String(describing: error))")
+            let stats = AppStats(globalScore: 0)
+            ctx.insert(stats)
+            do { try ctx.save() }
+            catch {
+                logger.error("SwiftData save after failed fetch in Results failed: \(String(describing: error))")
+            }
+            appStats = stats
+            highscore = 0
+        }
     }
     
     func resetHighscore() {
         guard let ctx = modelContext, let stats = appStats else { return }
         stats.globalScore = 0
-        try? ctx.save()
+        do { try ctx.save() }
+        catch {
+            logger.error("SwiftData save after resetHighscore failed: \(String(describing: error))")
+        }
         highscore = 0
     }
     

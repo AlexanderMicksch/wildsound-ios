@@ -7,38 +7,68 @@
 
 import Foundation
 import SwiftData
+import os
 
 @MainActor
 final class AdminQuickAddViewModel: ObservableObject {
-    
+
     @Published var nameInput: String = ""
     @Published var storagePathInput: String = ""
     @Published var wikiTitleDeInput: String = ""
     @Published var showSavedBanner: Bool = false
     @Published var selectedSoundSource: SoundSource = .xenoCanto
     @Published var selectedImageCrop: ImageCrop = .center
-    
-     var isValid: Bool {
-        let trimmedName = nameInput.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedStoragePath = storagePathInput.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedWikiTitleDe = wikiTitleDeInput.trimmingCharacters(in: .whitespacesAndNewlines)
-        
+
+    private let logger = Logger(subsystem: "WildSound", category: "AdminAdd")
+
+    var isValid: Bool {
+        let trimmedName = nameInput.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+        let trimmedStoragePath = storagePathInput.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+        let trimmedWikiTitleDe = wikiTitleDeInput.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+
         return !trimmedName.isEmpty
-        && Self.isValidStoragePath(trimmedStoragePath)
-        && !trimmedWikiTitleDe.isEmpty
+            && Self.isValidStoragePath(trimmedStoragePath)
+            && !trimmedWikiTitleDe.isEmpty
     }
-    
-     static func isValidStoragePath(_ path: String) -> Bool {
+
+    static func isValidStoragePath(_ path: String) -> Bool {
         guard !path.isEmpty else { return false }
         if path.lowercased().hasPrefix("http") { return false }
         return path.contains("/")
     }
-    
+
     func addAnimal(using context: ModelContext) throws {
-        let trimmedName = nameInput.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedStoragePath = storagePathInput.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedWikiTitleDe = wikiTitleDeInput.trimmingCharacters(in: .whitespacesAndNewlines)
-        
+        let trimmedName = nameInput.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+        let trimmedStoragePath = storagePathInput.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+        let trimmedWikiTitleDe = wikiTitleDeInput.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+
+        guard !trimmedName.isEmpty else {
+            logger.error("addAnimal: empty name")
+            throw AppUserError.unknown
+        }
+        guard Self.isValidStoragePath(trimmedStoragePath) else {
+            logger.error(
+                "addAnimal: invalid storage path '\(trimmedStoragePath, privacy: .public)'"
+            )
+            throw AppUserError.invalidURL
+        }
+        guard !trimmedWikiTitleDe.isEmpty else {
+            logger.error("addAnimal: empty wiki title")
+            throw AppUserError.unknown
+        }
+
         let newAnimal = Animal(
             name: trimmedName,
             storagePath: trimmedStoragePath,
@@ -49,25 +79,42 @@ final class AdminQuickAddViewModel: ObservableObject {
             soundSource: selectedSoundSource,
             imageCrop: .center
         )
-        
+
         context.insert(newAnimal)
-        try context.save()
-        
+        do {
+            try context.save()
+        } catch {
+            logger.error(
+                "SwiftData save (addAnimal) failed: \(String(describing: error))"
+            )
+            throw AppUserError.storageFailed
+        }
         resetFields()
         showSavedBanner = true
     }
-    
+
     func resetFields() {
         nameInput = ""
         storagePathInput = ""
         wikiTitleDeInput = ""
         selectedImageCrop = .center
     }
-    
-     func deleteAnimals(at offsets: IndexSet, from animals: [Animal], using context: ModelContext) throws {
+
+    func deleteAnimals(
+        at offsets: IndexSet,
+        from animals: [Animal],
+        using context: ModelContext
+    ) throws {
         for index in offsets {
             context.delete(animals[index])
         }
-        try context.save()
+        do {
+            try context.save()
+        } catch {
+            logger.error(
+                "SwiftData save (deleteAnimals) failed: \(String(describing: error))"
+            )
+            throw AppUserError.storageFailed
+        }
     }
 }

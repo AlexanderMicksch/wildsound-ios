@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import os
 
 @MainActor
 final class QuizViewModel: ObservableObject {
@@ -23,6 +24,7 @@ final class QuizViewModel: ObservableObject {
     private var unusedCorrectQueue: [Animal]
     private var modelContext: ModelContext?
     private var appStats: AppStats?
+    private let logger = Logger(subsystem: "WildSound", category: "Quiz")
 
     var hasMoreRoundsInCycle: Bool {
         !unusedCorrectQueue.isEmpty
@@ -65,13 +67,32 @@ final class QuizViewModel: ObservableObject {
 
     func setModelContext(_ context: ModelContext) {
         self.modelContext = context
-        let ctx = context
-        if let existing = try? ctx.fetch(FetchDescriptor<AppStats>()).first {
-            self.appStats = existing
-        } else {
+        do {
+            if let existing = try context.fetch(FetchDescriptor<AppStats>())
+                .first
+            {
+                self.appStats = existing
+            } else {
+                let stats = AppStats(globalScore: 0)
+                context.insert(stats)
+                do { try context.save() } catch {
+                    logger.error(
+                        "SwiftData initial save failed: \(String(describing: error))"
+                    )
+                }
+                self.appStats = stats
+            }
+        } catch {
+            logger.error(
+                "SwiftData fetch AppStats failed: \(String(describing: error))"
+            )
             let stats = AppStats(globalScore: 0)
-            ctx.insert(stats)
-            try? ctx.save()
+            context.insert(stats)
+            do { try context.save() } catch {
+                logger.error(
+                    "SwiftData save after fetch-error failed: \(String(describing: error))"
+                )
+            }
             self.appStats = stats
         }
     }
@@ -92,7 +113,6 @@ final class QuizViewModel: ObservableObject {
         return options.shuffled()
     }
 
-    
     // Antwort prüfen
     func answer(_ animal: Animal) {
         guard let current = state.currentQuestion else { return }
@@ -106,14 +126,18 @@ final class QuizViewModel: ObservableObject {
             if let stats = appStats {
                 stats.globalScore += 1
             }
-            
+
             if let index = allAnimals.firstIndex(where: { $0.id == current.id })
             {
                 allAnimals[index].guessedCount += 1
             }
-            
+
             if let ctx = modelContext {
-                try? ctx.save()
+                do { try ctx.save() } catch {
+                    logger.error(
+                        "SwiftData save after answer() failed: \(String(describing: error))"
+                    )
+                }
             }
 
         } else {
@@ -123,7 +147,6 @@ final class QuizViewModel: ObservableObject {
         state.isShowingFeedback = true
     }
 
-    
     func nextQuestionAfterFeedback() {
         stopSound()
         guard let current = state.currentQuestion else { return }
@@ -265,13 +288,13 @@ final class QuizViewModel: ObservableObject {
         unusedCorrectQueue.removeFirst(countForThisRound)
         return roundPool
     }
-    
+
     private func resetScoreIfCycleCompleted() {
         let noRoundsLeft = unusedCorrectQueue.isEmpty
         let noCurrentLeft = state.remainingQuestions.isEmpty
         let noFailedLeft = state.failedAnimals.isEmpty
         let noGlobalFailedLeft = globalFailedAcrossRounds.isEmpty
-        
+
         if noRoundsLeft && noCurrentLeft && noFailedLeft && noGlobalFailedLeft {
             state.score = 0
         }
@@ -283,24 +306,33 @@ final class QuizViewModel: ObservableObject {
 
     func loadWikipediaSummariesForCurrentOptions() async {
         for animal in state.answerOptions {
-            if state.wikipediaSummaries[animal.id] == nil {
-                if let summary = try? await wikipediaService.fetchSummary(
+            guard state.wikipediaSummaries[animal.id] == nil else { continue }
+            do {
+                let summary = try await wikipediaService.fetchSummary(
                     titleDe: animal.wikiTitleDe,
                     titleEn: animal.wikiTitleEn
-                ) {
-                    state.wikipediaSummaries[animal.id] = summary
-                }
+                )
+                state.wikipediaSummaries[animal.id] = summary
+            } catch {
+                logger.error(
+                    "Wiki fetch failed for \(animal.name): \(String(describing: error))"
+                )
             }
         }
     }
 
     func ensureSummary(for animal: Animal) async {
-        if state.wikipediaSummaries[animal.id] != nil { return }
-        if let summary = try? await wikipediaService.fetchSummary(
-            titleDe: animal.wikiTitleDe,
-            titleEn: animal.wikiTitleEn
-        ) {
+        guard state.wikipediaSummaries[animal.id] == nil else { return }
+        do {
+            let summary = try await wikipediaService.fetchSummary(
+                titleDe: animal.wikiTitleDe,
+                titleEn: animal.wikiTitleEn
+            )
             state.wikipediaSummaries[animal.id] = summary
+        } catch {
+            logger.error(
+                "ensureSummary failed for \(animal.name): \(String(describing: error))"
+            )
         }
     }
 
@@ -334,7 +366,13 @@ final class QuizViewModel: ObservableObject {
 
     func toggleFavorite(for animal: Animal) {
         animal.isFavorite.toggle()
-        if let ctx = modelContext { try? ctx.save() }
+        if let ctx = modelContext {
+            do { try ctx.save() } catch {
+                logger.error(
+                    "SwiftData save after toggleFavorite failed: \(String(describing: error))"
+                )
+            }
+        }
     }
 
     func toggleFavorite(id: UUID) {

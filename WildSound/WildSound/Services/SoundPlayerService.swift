@@ -8,6 +8,7 @@
 import AVFoundation
 import Combine
 import Foundation
+import os
 
 @Observable
 final class SoundPlayerService {
@@ -23,6 +24,7 @@ final class SoundPlayerService {
     private(set) var currentURL: URL?
 
     private let repo = SoundRepository()
+    private let logger = Logger(subsystem: "WildSound", category: "Sound")
 
     func playSound(from url: URL) {
         stop()
@@ -43,8 +45,13 @@ final class SoundPlayerService {
             for: AVPlayerItem.failedToPlayToEndTimeNotification,
             object: item
         )
-        .sink { [weak self] _ in
+        .sink { [weak self] note in
             self?.error = "Audio konnte nicht abgespielt werden"
+            if let err = note.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? Error {
+                self?.logger.error("AVPlayer failedToPlay: \(String(describing: err))")
+            } else {
+                self?.logger.error("AVPlayer failedToPlay without error")
+            }
             self?.stop()
         }
         .store(in: &cancellables)
@@ -76,7 +83,7 @@ final class SoundPlayerService {
         } catch {
             self.error =
                 "Sound konnte nicht geladen werden: \(error.localizedDescription)"
-            print("SoundPlayerService.play(storagePath:) error:", error)
+            logger.error("Sound download failed (play): \(String(describing: error))")
         }
     }
 
@@ -104,7 +111,7 @@ final class SoundPlayerService {
         } catch {
             self.error =
                 "Sound konnte nicht geladen werden: \(error.localizedDescription)"
-            print("SoundPlayerService.toggle(storagePath:) error:", error)
+            logger.error("Sound download failed (toggle): \(String(describing: error))")
         }
     }
 
@@ -117,6 +124,7 @@ final class SoundPlayerService {
 
     func setError(_ message: String) {
         error = message
+        logger.error("Manuel sound error set: \(message)")
     }
 
     deinit {
