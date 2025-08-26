@@ -20,6 +20,7 @@ final class AdminQuickAddViewModel: ObservableObject {
     @Published var selectedImageCrop: ImageCrop = .center
 
     private let logger = Logger(subsystem: "WildSound", category: "AdminAdd")
+    private let firestore = FirestoreService()
 
     var isValid: Bool {
         let trimmedName = nameInput.trimmingCharacters(
@@ -68,6 +69,18 @@ final class AdminQuickAddViewModel: ObservableObject {
             logger.error("addAnimal: empty wiki title")
             throw AppUserError.unknown
         }
+        
+        do {
+            let fd = FetchDescriptor<Animal>(
+                predicate: #Predicate { $0.storagePath == trimmedStoragePath }
+            )
+            if try context.fetch(fd).isEmpty == false {
+                logger.error("addAnimal: duplicate storagePath '\(trimmedStoragePath, privacy: .public)'")
+                throw AppUserError.storageFailed
+            }
+        } catch {
+            logger.error("addAnimal: duplicate ceck failed: \(String(describing: error))")
+        }
 
         let newAnimal = Animal(
             name: trimmedName,
@@ -77,7 +90,7 @@ final class AdminQuickAddViewModel: ObservableObject {
             isFavorite: false,
             guessedCount: 0,
             soundSource: selectedSoundSource,
-            imageCrop: .center
+            imageCrop: selectedImageCrop
         )
 
         context.insert(newAnimal)
@@ -89,6 +102,12 @@ final class AdminQuickAddViewModel: ObservableObject {
             )
             throw AppUserError.storageFailed
         }
+        
+        Task {
+            do { try await firestore.saveAnimal(newAnimal) }
+            catch { logger.error("Firestore saveAnimal failed: \(String(describing: error))") }
+        }
+        
         resetFields()
         showSavedBanner = true
     }
@@ -115,6 +134,15 @@ final class AdminQuickAddViewModel: ObservableObject {
                 "SwiftData save (deleteAnimals) failed: \(String(describing: error))"
             )
             throw AppUserError.storageFailed
+        }
+    }
+    
+    func exportAllAnimals(using context: ModelContext) async {
+        do {
+            let animals = try context.fetch(FetchDescriptor<Animal>())
+            await firestore.exportAnimals(animals)
+        } catch {
+            logger.error("SwiftData fetch for export failed: \(String(describing: error))")
         }
     }
 }

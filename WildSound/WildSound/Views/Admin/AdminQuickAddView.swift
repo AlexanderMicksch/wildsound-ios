@@ -63,6 +63,13 @@ struct AdminQuickAddView: View {
                             && adminViewModel.wikiTitleDeInput.isEmpty
                     )
                 }
+                ToolbarItem(placement: .bottomBar) {
+                    Button("Alle Tiere nach Firestore exportieren") {
+                        Task {
+                            await adminViewModel.exportAllAnimals(using: modelContext)
+                        }
+                    }
+                }
             }
             .overlay(alignment: .bottom) {
                 if adminViewModel.showSavedBanner {

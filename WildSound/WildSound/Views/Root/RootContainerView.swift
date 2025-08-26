@@ -9,14 +9,20 @@ import SwiftData
 import SwiftUI
 
 struct RootContainerView: View {
+    @Environment(\.modelContext) private var modelContext
     @Query(sort: \Animal.name, order: .forward) private var storedAnimals:
         [Animal]
+    
+    private let firestore = FirestoreService()
     
     var body: some View {
         
         let initialAnimals =
             storedAnimals.isEmpty ? seedAnimals : Array(storedAnimals)
         RootTabs(initialAnimals: initialAnimals)
+            .task {
+                await firestore.importAnimalsIncremental(using: modelContext)
+            }
     }
 }
 

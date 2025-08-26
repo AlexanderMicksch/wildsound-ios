@@ -10,6 +10,8 @@
 		8D23B85F2E4CBAE900F7ED29 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D23B85E2E4CBAE900F7ED29 /* GoogleService-Info.plist */; };
 		8D23B8622E4CBC6300F7ED29 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 8D23B8612E4CBC6300F7ED29 /* FirebaseCore */; };
 		8D23B8642E4CBC6300F7ED29 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 8D23B8632E4CBC6300F7ED29 /* FirebaseStorage */; };
+		8DDF38D42E5DD36900458520 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 8DDF38D32E5DD36900458520 /* FirebaseAuth */; };
+		8DDF38D62E5DD36900458520 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 8DDF38D52E5DD36900458520 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +33,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D23B8622E4CBC6300F7ED29 /* FirebaseCore in Frameworks */,
+				8DDF38D62E5DD36900458520 /* FirebaseFirestore in Frameworks */,
+				8DDF38D42E5DD36900458520 /* FirebaseAuth in Frameworks */,
 				8D23B8642E4CBC6300F7ED29 /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -44,6 +48,7 @@
 				8D67389D2E2E3253007C2C27 /* WildSound */,
 				8D67389C2E2E3253007C2C27 /* Products */,
 				8D23B85E2E4CBAE900F7ED29 /* GoogleService-Info.plist */,
+				8DDF38D22E5DD2A300458520 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -53,6 +58,13 @@
 				8D67389B2E2E3253007C2C27 /* WildSound.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8DDF38D22E5DD2A300458520 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -77,6 +89,8 @@
 			packageProductDependencies = (
 				8D23B8612E4CBC6300F7ED29 /* FirebaseCore */,
 				8D23B8632E4CBC6300F7ED29 /* FirebaseStorage */,
+				8DDF38D32E5DD36900458520 /* FirebaseAuth */,
+				8DDF38D52E5DD36900458520 /* FirebaseFirestore */,
 			);
 			productName = WildSound;
 			productReference = 8D67389B2E2E3253007C2C27 /* WildSound.app */;
@@ -360,6 +374,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8D23B8602E4CBC6300F7ED29 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		8DDF38D32E5DD36900458520 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8D23B8602E4CBC6300F7ED29 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		8DDF38D52E5DD36900458520 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8D23B8602E4CBC6300F7ED29 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
