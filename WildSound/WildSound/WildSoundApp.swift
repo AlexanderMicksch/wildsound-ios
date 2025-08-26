@@ -11,6 +11,9 @@ import SwiftUI
 
 @main
 struct WildSoundApp: App {
+    
+    @StateObject private var auth = AuthViewModel()
+    
     init() {
         if FirebaseApp.app() == nil {
             FirebaseApp.configure()
@@ -19,7 +22,8 @@ struct WildSoundApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootContainerView()
+            StartView()
+                .environmentObject(auth)
         }
         .modelContainer(for: Animal.self)
     }

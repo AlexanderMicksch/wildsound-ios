@@ -40,12 +40,15 @@ class Animal: Identifiable, Hashable {
         self.soundSource = soundSource
         self.imageCrop = imageCrop
     }
-    
-    static func == (lhs: Animal, rhs: Animal) -> Bool {
-        lhs.id == rhs.id
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
 }
+    
+    extension Animal {
+        static func == (lhs: Animal, rhs: Animal) -> Bool {
+            lhs.id == rhs.id
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
+    }
+

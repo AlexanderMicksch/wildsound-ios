@@ -19,9 +19,6 @@ struct AnimalGridCell: View {
                 .environmentObject(viewModel)
                 .contentShape(RoundedRectangle(cornerRadius: 15))
             
-            NavigationLink(value: animal) { Rectangle().fill(.clear) }
-                .accessibilityHidden(true)
-            
             FavoriteStar(animal: animal)
                 .environmentObject(viewModel)
                 .padding(.top, 6)

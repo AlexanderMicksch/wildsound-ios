@@ -39,4 +39,9 @@ enum AppUserError: LocalizedError {
         case .unknown:      "Später erneut versuchen."
         }
     }
+    
+    func log(context: String = "") {
+        let ctx = context.isEmpty ? "" : "[\(context)] "
+        AppLogger.ui.error("\(ctx)\(self.localizedDescription)")
+    }
 }
