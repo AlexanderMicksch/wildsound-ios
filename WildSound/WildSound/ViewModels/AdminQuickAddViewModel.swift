@@ -69,17 +69,21 @@ final class AdminQuickAddViewModel: ObservableObject {
             logger.error("addAnimal: empty wiki title")
             throw AppUserError.unknown
         }
-        
+
         do {
             let fd = FetchDescriptor<Animal>(
                 predicate: #Predicate { $0.storagePath == trimmedStoragePath }
             )
             if try context.fetch(fd).isEmpty == false {
-                logger.error("addAnimal: duplicate storagePath '\(trimmedStoragePath, privacy: .public)'")
+                logger.error(
+                    "addAnimal: duplicate storagePath '\(trimmedStoragePath, privacy: .public)'"
+                )
                 throw AppUserError.storageFailed
             }
         } catch {
-            logger.error("addAnimal: duplicate ceck failed: \(String(describing: error))")
+            logger.error(
+                "addAnimal: duplicate ceck failed: \(String(describing: error))"
+            )
         }
 
         let newAnimal = Animal(
@@ -102,12 +106,15 @@ final class AdminQuickAddViewModel: ObservableObject {
             )
             throw AppUserError.storageFailed
         }
-        
+
         Task {
-            do { try await firestore.saveAnimal(newAnimal) }
-            catch { logger.error("Firestore saveAnimal failed: \(String(describing: error))") }
+            do { try await firestore.saveAnimal(newAnimal) } catch {
+                logger.error(
+                    "Firestore saveAnimal failed: \(String(describing: error))"
+                )
+            }
         }
-        
+
         resetFields()
         showSavedBanner = true
     }
@@ -136,13 +143,28 @@ final class AdminQuickAddViewModel: ObservableObject {
             throw AppUserError.storageFailed
         }
     }
-    
-    func exportAllAnimals(using context: ModelContext) async {
+
+    func applyImageCropChange(
+        for animal: Animal,
+        to newCrop: ImageCrop,
+        using context: ModelContext
+    ) {
+        animal.imageCrop = newCrop
         do {
-            let animals = try context.fetch(FetchDescriptor<Animal>())
-            await firestore.exportAnimals(animals)
+            try context.save()
         } catch {
-            logger.error("SwiftData fetch for export failed: \(String(describing: error))")
+            logger.error(
+                "SwiftData save after imageCrop change failed: \(String(describing: error))"
+            )
+        }
+        Task {
+            do {
+                try await firestore.updateImageCrop(for: animal.id, to: newCrop)
+            } catch {
+                logger.error(
+                    "Firestore update imageCrop failed: \(String(describing: error))"
+                )
+            }
         }
     }
 }

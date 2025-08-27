@@ -24,12 +24,12 @@ final class FirestoreService {
         let dto = AnimalDTO(animal)
         let docID = dto.id.uuidString
         var data = makeDataDict(from: dto)
-        data["updateAT"] = FieldValue.serverTimestamp()
+        data["updatedAT"] = FieldValue.serverTimestamp()
 
         do {
             try await db.collection(collectionName)
                 .document(docID)
-                .setData(data)
+                .setData(data, merge: true)
         } catch {
             logger.error(
                 "saveAnimal failed (\(docID, privacy: .public)): \(String(describing: error))"
@@ -38,6 +38,23 @@ final class FirestoreService {
         }
     }
 
+    func updateFields(for id: UUID, fields: [String: Any]) async throws {
+        var patch = fields
+        patch["updatedAT"] = FieldValue.serverTimestamp()
+        try await db.collection(collectionName)
+            .document(id.uuidString)
+            .updateData(patch)
+    }
+    
+    func updateImageCrop(for id: UUID, to crop: ImageCrop) async throws {
+        try await db.collection(collectionName)
+            .document(id.uuidString)
+            .updateData([
+                "imageCropRaw": crop.rawValue,
+                "updatedAT": FieldValue.serverTimestamp()
+            ])
+    }
+    
     func exportAnimals(_ animals: [Animal]) async {
         for a in animals {
             do { try await saveAnimal(a) } catch {

@@ -88,34 +88,17 @@ struct AdminQuickAddView: View {
                             "deleteAnimals fehlgeschlagen: \(error.localizedDescription)"
                         )
                     }
+                },
+                onCropChange: { animal, newCrop in
+                    adminViewModel.applyImageCropChange(
+                        for: animal,
+                        to: newCrop,
+                        using: modelContext
+                    )
                 }
             )
         }
         .navigationTitle("Admin - Quick Add")
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Felder leeren", role: .destructive) {
-                    adminViewModel.resetFields()
-                }
-                .disabled(
-                    adminViewModel.nameInput.isEmpty
-                        && adminViewModel.storagePathInput.isEmpty
-                        && adminViewModel.wikiTitleDeInput.isEmpty
-                )
-            }
-            ToolbarItem(placement: .bottomBar) {
-                Button("Alle Tiere nach Firestore exportieren") {
-                    Task {
-                        await adminViewModel.exportAllAnimals(
-                            using: modelContext
-                        )
-                        AppLogger.firestore.info(
-                            "Export aller Tiere nach Firestore angestoßen"
-                        )
-                    }
-                }
-            }
-        }
         .overlay(alignment: .bottom) {
             if adminViewModel.showSavedBanner {
                 SavedBannerView(text: "Gespeichert CHECK")

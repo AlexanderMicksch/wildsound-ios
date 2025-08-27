@@ -13,6 +13,7 @@ struct AnimalsListSectionView: View {
     
     let animals: [Animal]
     let onDelete: (IndexSet) -> Void
+    let onCropChange: (Animal, ImageCrop) -> Void
     
     var body: some View {
         Section("Gespeicherte Tiere (\(animals.count))") {
@@ -25,6 +26,9 @@ struct AnimalsListSectionView: View {
                         AnimalCropRowView(animal: animal)
                             .environmentObject(quizViewModel)
                             .task { await quizViewModel.ensureSummary(for: animal) }
+                            .onChange(of: animal.imageCrop) { _, newCrop in
+                                onCropChange(animal, newCrop)
+                            }
                     }
                     .onDelete(perform: onDelete)
                 }
@@ -33,3 +37,4 @@ struct AnimalsListSectionView: View {
         }
     }
 }
+

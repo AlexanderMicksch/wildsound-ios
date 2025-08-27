@@ -27,7 +27,7 @@ struct QuizResultsView: View {
 
                 HStack(spacing: 16) {
                     StatCard(
-                        title: "Punkte dieser Runde",
+                        title: "Punkte",
                         value: viewModel.state.score
                     )
                     StatCard(
