@@ -17,9 +17,11 @@ final class QuizViewModel: ObservableObject {
     let wikipediaService = WikipediaService()
 
     @Published private(set) var state: QuizState
-
+    @Published private(set) var highscore: Int = 0
+ 
     private(set) var globalFailedAcrossRounds = Set<UUID>()
 
+    private var didScoreCurrentQuestion = false
     private var questionLimit: Int
     private var unusedCorrectQueue: [Animal]
     private var modelContext: ModelContext?
@@ -72,6 +74,7 @@ final class QuizViewModel: ObservableObject {
                 .first
             {
                 self.appStats = existing
+                self.highscore = existing.globalScore
             } else {
                 let stats = AppStats(globalScore: 0)
                 context.insert(stats)
@@ -81,6 +84,7 @@ final class QuizViewModel: ObservableObject {
                     )
                 }
                 self.appStats = stats
+                self.highscore = stats.globalScore
             }
         } catch {
             logger.error(
@@ -94,6 +98,7 @@ final class QuizViewModel: ObservableObject {
                 )
             }
             self.appStats = stats
+            self.highscore = stats.globalScore
         }
     }
 
@@ -116,6 +121,7 @@ final class QuizViewModel: ObservableObject {
     // Antwort prüfen
     func answer(_ animal: Animal) {
         guard let current = state.currentQuestion else { return }
+        guard !didScoreCurrentQuestion else { return }
 
         if animal.id == current.id {
             state.guessedAnimals.append(current)
@@ -125,6 +131,7 @@ final class QuizViewModel: ObservableObject {
 
             if let stats = appStats {
                 stats.globalScore += 1
+                highscore = stats.globalScore
             }
 
             if let index = allAnimals.firstIndex(where: { $0.id == current.id })
@@ -159,10 +166,10 @@ final class QuizViewModel: ObservableObject {
                 for: next,
                 from: allAnimals
             )
+            didScoreCurrentQuestion = false
         } else {
             state.currentQuestion = nil
             state.status = .finished
-            resetScoreIfCycleCompleted()
         }
         state.isShowingFeedback = false
         state.lastAnswerCorrect = nil

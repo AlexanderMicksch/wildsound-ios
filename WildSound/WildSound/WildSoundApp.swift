@@ -25,6 +25,6 @@ struct WildSoundApp: App {
             StartView()
                 .environmentObject(auth)
         }
-        .modelContainer(for: Animal.self)
+        .modelContainer(for: [Animal.self, AppStats.self])
     }
 }
