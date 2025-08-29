@@ -94,7 +94,6 @@ WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fa
 
 #### 3rd-Party Frameworks
 
-  - Firebase SDK für iOS (Swift Package Manager)
   - Firebase SDK für iOS (Auth, Firestore, Storage) – über Swift Package Manager
 
 
