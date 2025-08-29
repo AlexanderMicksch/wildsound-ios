@@ -7,7 +7,6 @@ Das spannende Quiz, bei dem du herausfinden musst, welches Tier welchen Laut mac
 WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fakten über Tiere und ihre Stimmen. Perfekt für Kinder, Erwachsene, Tierfreunde, Naturfans und als edukatives Spiel für die ganze Familie.
 
 
-
 ## Design
 
 **In diesem Moment entsteht gerade eine sehr coole Tierstimmen-Quiz App!** 
@@ -18,25 +17,27 @@ WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fa
 ## Features
 
 - [ ] Tierlaute-Quiz: Zu jedem Tier wird ein Ton abgespielt – du musst das passende Tier auswählen!
-- [ ] Detailansicht: Zu jedem Tier gibt es spannende Fakten und Bilder aus Wikipedia.
+- [ ] Detailansicht: Zu jedem Tier gibt es spannende Fakten und Bilder aus Wikipedia (DE mit EN-Fallback).
 - [ ] Lokale Speicherung des Fortschritts per SwiftData (z. B. erratene Tiere, Favoriten).
 - [ ] Nutzung von Firebase Storage für Tierstimmen (MP3).
-- [ ] Direkte Nutzung von xeno-canto für Vogelstimmen.
-- [ ] Übersicht aller bereits entdeckten Tiere (Sammlung).
+- [ ] Übersicht aller bereits entdeckten Tiere (Sammlung) mit Filtern (Alle/Erraten/Favoriten).
+- [ ] Globaler Highscore (SwiftData) mit Reset-Option.
+- [ ] Admin-Login (Firebase Auth) und Admin-Bereich zum schnellen Hinzufügen/Ändern von Tieren.
 
 ## Technischer Aufbau
 
 #### Projektaufbau
 
 - **MVVM-Architektur:**  
-  - Models: Animal, QuizState, etc.
-  - ViewModels: QuizViewModel, AnimalListViewModel, etc.
-  - Views: QuizView, DetailView, CollectionView
+  - Models: Animal, QuizState, AppStats
+  - ViewModels: QuizViewModel, CollectionsViewModel, AnimalDetailViewModel, ResultsViewModel, AuthViewModel, AdminQuickAddViewModel
+  - Views: QuizGridView, AnimalDetailView, CollectionsView, QuizResultsView, AdminQuickAddView, StartView, RootContainerView
     
 - **Repositories:**  
-  - Für API-Anbindung (Wikipedia, xeno-canto)
-  - Für lokale Speicherung (SwiftData)
-  - Für das Laden und Speichern von Tierstimmen (Firebase Storage)
+  - Wikipedia-Anbindung (REST Page Summary)
+  - SwiftData (lokale Speicherung)
+  - Firebase Storage (Audio laden)
+  - Firebase Firestore (Daten-Sync inkl. Admin-Flag & Änderungszeitpunkten)
     
 - **Ordnerstruktur:** 
   - Models
@@ -47,50 +48,54 @@ WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fa
 
 #### Audio Widergabe
 
-- Die Tierstimmen werden mit AVFoundation (AVPlayer) direkt aus dem Internet gestreamt oder aus dem Firebase Storage abgespielt.
+- Die Tierstimmen liegen als MP3 im Firebase Storage.
+- Playback erfolgt mit AVPlayer; die App lädt zur Laufzeit die Download-URL aus dem Storage und spielt von dort ab.
 
 #### Datenspeicherung
 
 - **Tiere & ihre Grunddaten:** 
-  - Gespeichert als Model-Objekte in SwiftData (Name, Sound-URL, wikiTitle etc.).
+  - Gespeichert als Model-Objekte in SwiftData (z. B. Name, storagePath als Pfad im Firebase Storage, wikiTitleDe, optional wikiTitleEn, isFavorite, guessedCount, imageCrop, soundSource).
 
 - **Bilder & Tier Detail Beschreibungen:**
-  - Dynamisch zur Laufzeit von der Wikipedia API geladen (Beschreibung, Foto, Details).
+  - Dynamisch zur Laufzeit über die MediaWiki REST API (Page Summary).
+  - Fallback: Falls ein DE-Eintrag fehlt, wird EN genutzt.
+  - Bilder werden über die im Summary enthaltenen Bild-URLs (Wikimedia Commons) angezeigt.
 
 - **Tierstimmen:**  
-  - Firebase Storage: MP3-Dateien werden von der App per URL geladen
-  - Für Vögel: Nutzung der xeno-canto API und MP3-Links.
+  - Quelle: Firebase Storage (MP3).
+  - Hinweis: Es gibt keinen direkten xeno-canto API-Abruf; xeno-canto/freesound dienen lediglich als Herkunfts-Metadatum.
     
 - **Nutzerfortschritt, Favoriten, Highscores:**  
-  - Lokal in SwiftData gespeichert.
- 
+  - Lokal in SwiftData gespeichert (u. a. globaler Highscore über AppStats).
+
 - **Warum genau so?**  
-  - **SwiftData**: Modern, Lokal, leicht erweiterbar.
-  - **Firebase Storage**: Professioneller Cloud-Speicher für Mediendateien.
-  - **xeno-canto**: Legale, große Vogelstimmendatenbank.
-  - **Wikipedia-API**: Liefert sehr zuverlässig aktuelle Bilder und Texte zu praktisch jedem Tier.
+  - **SwiftData:** Modern, Lokal, erweiterbar.
+  - **Firebase Storage:** Professioneller Cloud-Speicher für Mediendateien.
+  - **Wikipedia-API:** Liefert sehr zuverlässig aktuelle Bilder und Texte zu praktisch jedem Tier.
+  - **Firestore:** Synchronisiert Inhalte & Admin-Status; Änderungen werden effizient inkrementell geladen.
 
 #### Zentrale Datenlogik
 
 - **Alle wichtigen Datenquellen werden im SwiftData-Model pro Tier gebündelt:**
-  - Die App speichert Name, wikiTitle und Sound-URL (Firebase Storage/xeno-canto) in SwiftData
+  - Die App speichert Name, storagePath (anstelle einer direkten Sound-URL), Wiki-Titel u. a. lokal.
   - Bilder und Tier Details werden live über die Wikipedia API geladen.
 
+- **Sync-Logik (Firestore):**
+  - Inkrementeller Import: Bei App-Start werden nur Datensätze seit dem letzten Sync-Zeitpunkt geladen (lastSync), anhand eines Änderungs-Zeitstempels.
+  - Upsert-Strategie: Abgleich erfolgt stabil über den storagePath.
+ 
 #### API Calls
 
-- **Wikipedia REST API (MediaWiki REST API):**  
-  - Für Bild und Beschreibung jedes Tieres (über den WikiTitle im Model).
-  
-- **xeno-canto API:**  
-  - Für Vogelstimmen.
-  
-- **Firebase Storage:**  
-  - Für alle anderen Tierstimmen als MP3.
+- **Wikipedia REST API (MediaWiki Page Summary):**  
+  - Für Kurzbeschreibung & Bild-URL pro Tier (DE mit EN-Fallback).
 
+- **Firebase Storage:**  
+  - Für MP3-Downloads (Signierte Download-URL zur Laufzeit).
 
 #### 3rd-Party Frameworks
 
   - Firebase SDK für iOS (Swift Package Manager)
+  - Firebase SDK für iOS (Auth, Firestore, Storage) – über Swift Package Manager
 
 
 ## Ausblick
