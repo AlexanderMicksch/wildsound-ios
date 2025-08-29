@@ -38,10 +38,10 @@ final class AuthViewModel: ObservableObject {
         if let l = authListener { Auth.auth().removeStateDidChangeListener(l) }
     }
     
-    func signIn(email: String, pasword: String) async throws {
+    func signIn(email: String, password: String) async throws {
         state = .loading
         do {
-            let result = try await Auth.auth().signIn(withEmail: email, password: pasword)
+            let result = try await Auth.auth().signIn(withEmail: email, password: password)
             await updateFor(user: result.user)
         } catch {
             state = .signedOut

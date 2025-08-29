@@ -124,7 +124,7 @@ final class SoundPlayerService {
 
     func setError(_ message: String) {
         error = message
-        logger.error("Manuel sound error set: \(message)")
+        logger.error("Manual sound error set: \(message)")
     }
 
     deinit {

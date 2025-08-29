@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AdminLoginView: View {
-    let onSucces: () -> Void
+    let onSuccess: () -> Void
     @EnvironmentObject var auth: AuthViewModel
     @Environment(\.dismiss) private var dismiss
     
@@ -35,8 +35,8 @@ struct AdminLoginView: View {
             Button {
                 Task {
                     do {
-                        try await auth.signIn(email: email, pasword: password)
-                        onSucces()
+                        try await auth.signIn(email: email, password: password)
+                        onSuccess()
                         AppLogger.auth.info("Login erfolgreich – warte auf Admin-Flag")
                         await MainActor.run { dismiss() }
                     } catch {

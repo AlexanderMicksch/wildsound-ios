@@ -42,7 +42,7 @@ final class ResultsViewModel: ObservableObject {
                 highscore = 0
             }
         } catch {
-            logger.error("SwiftData fetch AppSats in Results failed: \(String(describing: error))")
+            logger.error("SwiftData fetch AppStats in Results failed: \(String(describing: error))")
             let stats = AppStats(globalScore: 0)
             ctx.insert(stats)
             do { try ctx.save() }

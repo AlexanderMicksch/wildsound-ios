@@ -54,7 +54,7 @@ struct StartView: View {
                 RootContainerView()
             }
             .sheet(isPresented: $showLogin) {
-                AdminLoginView(onSucces: {
+                AdminLoginView(onSuccess: {
                     showLogin = false
                     goToRoot = true
                 })
