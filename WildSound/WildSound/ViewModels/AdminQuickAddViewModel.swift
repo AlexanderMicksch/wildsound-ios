@@ -159,11 +159,10 @@ final class AdminQuickAddViewModel: ObservableObject {
         }
         Task {
             do {
-                try await firestore.updateImageCrop(for: animal.id, to: newCrop)
+                try await firestore.saveAnimal(animal)
+                logger.info("Upserted imageCrop via saveAnimal for \(animal.name, privacy: .public)")
             } catch {
-                logger.error(
-                    "Firestore update imageCrop failed: \(String(describing: error))"
-                )
+                    logger.error("saveAnimal after crop change failed: \(String(describing: error))")
             }
         }
     }
