@@ -11,17 +11,17 @@ import os
 
 @MainActor
 final class AdminQuickAddViewModel: ObservableObject {
-
+    
     @Published var nameInput: String = ""
     @Published var storagePathInput: String = ""
     @Published var wikiTitleDeInput: String = ""
     @Published var showSavedBanner: Bool = false
     @Published var selectedSoundSource: SoundSource = .xenoCanto
     @Published var selectedImageCrop: ImageCrop = .center
-
+    
     private let logger = Logger(subsystem: "WildSound", category: "AdminAdd")
     private let firestore = FirestoreService()
-
+    
     var isValid: Bool {
         let trimmedName = nameInput.trimmingCharacters(
             in: .whitespacesAndNewlines
@@ -32,18 +32,18 @@ final class AdminQuickAddViewModel: ObservableObject {
         let trimmedWikiTitleDe = wikiTitleDeInput.trimmingCharacters(
             in: .whitespacesAndNewlines
         )
-
+        
         return !trimmedName.isEmpty
-            && Self.isValidStoragePath(trimmedStoragePath)
-            && !trimmedWikiTitleDe.isEmpty
+        && Self.isValidStoragePath(trimmedStoragePath)
+        && !trimmedWikiTitleDe.isEmpty
     }
-
+    
     static func isValidStoragePath(_ path: String) -> Bool {
         guard !path.isEmpty else { return false }
         if path.lowercased().hasPrefix("http") { return false }
         return path.contains("/")
     }
-
+    
     func addAnimal(using context: ModelContext) throws {
         let trimmedName = nameInput.trimmingCharacters(
             in: .whitespacesAndNewlines
@@ -54,7 +54,7 @@ final class AdminQuickAddViewModel: ObservableObject {
         let trimmedWikiTitleDe = wikiTitleDeInput.trimmingCharacters(
             in: .whitespacesAndNewlines
         )
-
+        
         guard !trimmedName.isEmpty else {
             logger.error("addAnimal: empty name")
             throw AppUserError.unknown
@@ -69,7 +69,7 @@ final class AdminQuickAddViewModel: ObservableObject {
             logger.error("addAnimal: empty wiki title")
             throw AppUserError.unknown
         }
-
+        
         do {
             let fd = FetchDescriptor<Animal>(
                 predicate: #Predicate { $0.storagePath == trimmedStoragePath }
@@ -85,7 +85,7 @@ final class AdminQuickAddViewModel: ObservableObject {
                 "addAnimal: duplicate ceck failed: \(String(describing: error))"
             )
         }
-
+        
         let newAnimal = Animal(
             name: trimmedName,
             storagePath: trimmedStoragePath,
@@ -96,7 +96,7 @@ final class AdminQuickAddViewModel: ObservableObject {
             soundSource: selectedSoundSource,
             imageCrop: selectedImageCrop
         )
-
+        
         context.insert(newAnimal)
         do {
             try context.save()
@@ -106,7 +106,7 @@ final class AdminQuickAddViewModel: ObservableObject {
             )
             throw AppUserError.storageFailed
         }
-
+        
         Task {
             do { try await firestore.saveAnimal(newAnimal) } catch {
                 logger.error(
@@ -114,18 +114,18 @@ final class AdminQuickAddViewModel: ObservableObject {
                 )
             }
         }
-
+        
         resetFields()
         showSavedBanner = true
     }
-
+    
     func resetFields() {
         nameInput = ""
         storagePathInput = ""
         wikiTitleDeInput = ""
         selectedImageCrop = .center
     }
-
+    
     func deleteAnimals(
         at offsets: IndexSet,
         from animals: [Animal],
@@ -143,7 +143,7 @@ final class AdminQuickAddViewModel: ObservableObject {
             throw AppUserError.storageFailed
         }
     }
-
+    
     func applyImageCropChange(
         for animal: Animal,
         to newCrop: ImageCrop,
@@ -159,10 +159,18 @@ final class AdminQuickAddViewModel: ObservableObject {
         }
         Task {
             do {
-                try await firestore.saveAnimal(animal)
-                logger.info("Upserted imageCrop via saveAnimal for \(animal.name, privacy: .public)")
+                try await firestore.updateImageCrop(byStoragePath: animal.storagePath, to: newCrop)
+                
+            } catch let e as NSError
+                        where e.domain == "FirestoreService" && e.code == 404 {
+                do {
+                    try await firestore.saveAnimal(animal)
+                    logger.info("Created missing Firestore doc for \(animal.name, privacy: .public)")
+                } catch {
+                    logger.error("saveAnimal after 404 failed: \(String(describing: error))")
+                }
             } catch {
-                    logger.error("saveAnimal after crop change failed: \(String(describing: error))")
+                logger.error("Firestore update imageCrop failed: \(String(describing: error))")
             }
         }
     }
