@@ -40,7 +40,7 @@ final class QuizViewModel: ObservableObject {
         !globalFailedAcrossRounds.isEmpty
     }
 
-    init(animals: [Animal], questionLimit: Int = 6) {
+    init(animals: [Animal], questionLimit: Int = 5) {
         let shuffledAnimals = animals.shuffled()
         let countForThisRound = min(questionLimit, shuffledAnimals.count)
         let initialRoundPool = Array(shuffledAnimals.prefix(countForThisRound))
