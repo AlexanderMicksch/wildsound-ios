@@ -15,17 +15,17 @@ final class FirestoreService {
     private let db: Firestore
     private let logger = Logger(subsystem: "WildSound", category: "Firestore")
     private let collectionName = "animals"
-
+    
     init(db: Firestore = Firestore.firestore()) {
         self.db = db
     }
-
+    
     func saveAnimal(_ animal: Animal) async throws {
         let dto = AnimalDTO(animal)
         let docID = dto.id.uuidString
         var data = makeDataDict(from: dto)
         data["updatedAT"] = FieldValue.serverTimestamp()
-
+        
         do {
             try await db.collection(collectionName)
                 .document(docID)
@@ -37,7 +37,7 @@ final class FirestoreService {
             throw error
         }
     }
-
+    
     func updateFields(for id: UUID, fields: [String: Any]) async throws {
         var patch = fields
         patch["updatedAT"] = FieldValue.serverTimestamp()
@@ -46,14 +46,36 @@ final class FirestoreService {
             .updateData(patch)
     }
     
-    func updateImageCrop(for id: UUID, to crop: ImageCrop) async throws {
-        try await db.collection(collectionName)
-            .document(id.uuidString)
-            .updateData([
-                "imageCropRaw": crop.rawValue,
-                "updatedAT": FieldValue.serverTimestamp()
-            ])
-    }
+    //    func updateImageCrop(for id: UUID, to crop: ImageCrop) async throws {
+    //        try await db.collection(collectionName)
+    //            .document(id.uuidString)
+    //            .updateData([
+    //                "imageCropRaw": crop.rawValue,
+    //                "updatedAT": FieldValue.serverTimestamp()
+    //            ])
+    //    }
+    
+    func updateImageCrop(byStoragePath storagePath: String, to crop: ImageCrop) async throws {
+        let sp = storagePath.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        let snap = try await db.collection(collectionName)
+            .whereField("storagePath", isEqualTo: sp)
+            .limit(to: 1)
+            .getDocuments()
+        
+        guard let doc = snap.documents.first else {
+            throw NSError(
+                domain: "FirestoreService",
+                code: 404,
+                userInfo: [NSLocalizedDescriptionKey: "No doc with storagePath=\(sp)"]
+            )
+        }
+    
+    try await db.collection(collectionName).document(doc.documentID).updateData([
+        "imageCropRaw": crop.rawValue,
+        "updatedAT": FieldValue.serverTimestamp()
+    ])
+}
     
     func exportAnimals(_ animals: [Animal]) async {
         for a in animals {
