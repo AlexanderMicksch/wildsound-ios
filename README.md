@@ -6,12 +6,15 @@ Das spannende Quiz, bei dem du herausfinden musst, welches Tier welchen Laut mac
 
 WildSound macht Tierwissen zum Erlebnis: Spiele, rate und lerne faszinierende Fakten über Tiere und ihre Stimmen. Perfekt für Kinder, Erwachsene, Tierfreunde, Naturfans und als edukatives Spiel für die ganze Familie.
 
-
 ## Design
 
-**In diesem Moment entsteht gerade eine sehr coole Tierstimmen-Quiz App!** 
+<img width="200" alt="Simulator Screenshot - iPhone 16 Pro - 2025-09-03 at 09 39 26-portrait" src="https://github.com/user-attachments/assets/a55abc2b-9565-4dcc-9325-465feeb64680" />
+<img width="200" alt="Simulator Screenshot - iPhone 16 Pro - 2025-09-03 at 09 47 17-portrait" src="https://github.com/user-attachments/assets/812c5f8f-bffd-4aca-b214-7295cde01385" />
+<img width="200" alt="Simulator Screenshot - iPhone 16 Pro - 2025-09-03 at 09 41 04-portrait" src="https://github.com/user-attachments/assets/435e2c98-a8c9-472d-87db-8c779cf69746" />
+<img width="200" alt="Simulator Screenshot - iPhone 16 Pro - 2025-09-03 at 10 03 57-portrait" src="https://github.com/user-attachments/assets/adb5d339-419c-4bed-a297-03635c09b890" />
 
-**Bilder folgen bald...**
+
+
 
 
 ## Features
