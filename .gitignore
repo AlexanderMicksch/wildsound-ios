@@ -53,3 +53,4 @@ Pods/
 # Firebase / Google
 GoogleService-Info.plist
 **/GoogleService-Info.plist
+WildSound/WildSound/GoogleService-Info.plist
