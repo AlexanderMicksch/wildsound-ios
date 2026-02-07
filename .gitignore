@@ -50,3 +50,6 @@ ehthumbs.db
 Thumbs.db
 
 Pods/
+# Firebase / Google
+GoogleService-Info.plist
+**/GoogleService-Info.plist
