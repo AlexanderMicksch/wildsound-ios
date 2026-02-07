@@ -15,7 +15,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8D67389B2E2E3253007C2C27 /* WildSound.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = WildSound.app; path = "/Users/alexandermicksch/Documents/Syntax/03 IOS/03-11-abschlussprojekt-AlexanderMicksch/WildSound/build/Debug-iphoneos/WildSound.app"; sourceTree = "<absolute>"; };
+		8D27FEAD2F37D7CA005AE973 /* WildSound.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WildSound.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -54,6 +54,7 @@
 		8D67389C2E2E3253007C2C27 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				8D27FEAD2F37D7CA005AE973 /* WildSound.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -92,7 +93,7 @@
 				8DD131942E6046E600BC8686 /* ConfettiSwiftUI */,
 			);
 			productName = WildSound;
-			productReference = 8D67389B2E2E3253007C2C27 /* WildSound.app */;
+			productReference = 8D27FEAD2F37D7CA005AE973 /* WildSound.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
